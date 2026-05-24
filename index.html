@@ -765,99 +765,118 @@
 
   <script>
     const PUZZLE = {
-      date: "2026-05-20",
-      dayLabel: "Dimarts, 19 maig 2026",
+      date: "2026-05-24", // Data actualitzada per evitar problemes de memòria cau
+      dayLabel: "Diumenge, 24 maig 2026",
       difficulty: "Custom",
       width: 4,
-      height: 4,
-      identityClue: "Nova distribució aplicada.",
-      initialReveals: [15],
+      height: 5,
+      identityClue: "The stolen carrots family drama...",
+      initialReveals: [4], // Comencem destapant l'Eric (A2)
       cards: [
         { 
-          name: "Aida", profession: "PD", 
-          criminal: true, photo: "images/Aida.jpg", 
-          hint: "Les noies de la columna D son majísssssimes, i a més innocents", proof: [[10]] 
+          name: "Alex", profession: "guard", 
+          criminal: true, photo: "images/alex.jpg", 
+          hint: "There's an equal number of criminals in columns A and B", proof: [[16]] 
         },
         { 
-          name: "Enric", profession: "people", 
-          criminal: false, photo: "images/Enric.jpg", 
-          hint: "No existeixen 4 persones innocents veïnes entre elles", proof: [[8]] 
+          name: "Bob", profession: "bunny", 
+          criminal: true, photo: "images/bob.jpg", 
+          hint: "Don't look at me! I hate carrots.", proof: [[4]] 
         },
         { 
-          name: "Victor", profession: "dev", 
-          criminal: false, photo: "images/victor.png", 
-          hint: "Els 3 criminals veïns de la Noèlia estan en diagonal entre ells", proof: [[11]] 
+          name: "Carol", profession: "cook", 
+          criminal: true, photo: "images/carol.jpg", 
+          hint: "There's an odd number of criminals above Vince", proof: [[16]] 
         },
         { 
-          name: "Aina", profession: "Data", 
-          criminal: false, photo: "images/Aina.jpg", 
-          hint: "*singing Taylor Swift loudly, very louuuudly*", proof: [[0]] 
-        },
-        
-        { 
-          name: "Vicente", profession: "devops", 
-          criminal: true, photo: "images/vicente.png", 
-          hint: "*teletreballant des de Madrid amb una cadira de 4 potes...*", proof: [[2]] 
+          name: "Debra", profession: "judge", 
+          criminal: false, photo: "images/debra.jpg", 
+          hint: "There are exactly 2 innocents to the right of Eric", proof: [[4]] 
         },
         { 
-          name: "Xavi1", profession: "dev", 
-          criminal: false, photo: "images/Xavi1.jpg", 
-          hint: "Avui és el meu aniversari yuhuu", proof: [[11]] 
+          name: "Eric", profession: "cop", 
+          criminal: false, photo: "images/eric.jpg", 
+          hint: "Bob, if I were you, I'd just take the blame.", proof: [] 
         },
         { 
-          name: "Caro", profession: "RRHH", 
-          criminal: true, photo: "images/Caro.jpg", 
-          hint: "Les persones innocents estan totes connectades per veïnatge", proof: [[8, 12]] 
+          name: "Gabe", profession: "farmer", 
+          criminal: true, photo: "images/gabe.jpg", 
+          hint: "Only 1 of the 5 criminals neighboring Linda is to the right of Rose", proof: [[9, 12]] 
         },
         { 
-          name: "David A", profession: "QA", 
-          criminal: true, photo: "images/davidA.jpg", 
-          hint: "Cro tola mo", proof: [[8, 12]]
+          name: "Hilda", profession: "mech", 
+          criminal: false, photo: "images/hilda.jpg", 
+          hint: "An odd number of innocents in column A neighbor Linda", proof: [[9]] 
         },
         { 
-          name: "Noèlia", profession: "dev", 
-          criminal: false, photo: "images/noelia.png", 
-          hint: "Les columnes 2 i 4 tenen el mateix nombre de criminals", proof: [[2, 11]] 
+          name: "John", profession: "mech", 
+          criminal: false, photo: "images/john.jpg", 
+          hint: "There is only one criminal in column D", proof: [[3]] 
         },
         { 
-          name: "Marcos", profession: "dev", 
-          criminal: true, photo: "images/marcos.png", 
-          hint: "unknown", proof: [[2]] 
+          name: "Katie", profession: "bunny", 
+          criminal: true, photo: "images/katie.jpg", 
+          hint: "Bob! You never said that about my carrot cakes!", proof: [[1]] 
         },
         { 
-          name: "Guillem", profession: "dev", 
-          criminal: true, photo: "images/GuillemC.jpg", 
-          hint: "Les persones de producte de la columna A són criminal", proof: [[15]] 
+          name: "Linda", profession: "farmer", 
+          criminal: true, photo: "images/linda.jpg", 
+          hint: "Both innocents in column B are connected", proof: [[1]] 
         },
         { 
-          name: "Carlota", profession: "PD", 
-          criminal: false, photo: "images/Carlota.jpg", 
-          hint: "Cada fila té, com a mínim, un dev innocent", proof: [[0]] 
+          name: "Petra", profession: "mech", 
+          criminal: true, photo: "images/petra.jpg", 
+          hint: "There is only one innocent to the right of Alex", proof: [[0]] 
         },
         { 
-          name: "Marc", profession: "Revenue", 
-          criminal: true, photo: "images/Jauregui.jpg", 
-          hint: "En Víctor té més criminals a sota que l’Aina", proof: [[10]] 
+          name: "Quita", profession: "painter", 
+          criminal: false, photo: "images/quita.jpg", 
+          hint: "Petra and Tyler have 2 innocent neighbors in common", proof: [[14]] 
         },
         { 
-          name: "Cori", profession: "dev", 
-          criminal: false, photo: "images/cori.png", 
-          hint: "Vermutet?", proof: [[2, 11]] 
+          name: "Rose", profession: "judge", 
+          criminal: true, photo: "images/rose.jpg", 
+          hint: "What have I done... Is it too late to return the carrots?", proof: [[8]] 
         },
         { 
-          name: "Xavi 2", profession: "PM", 
-          criminal: false, photo: "images/Xavi2.jpg", 
-          hint: "*ha trigat 30s a fer aquest puzzle*", proof: [[6]] 
+          name: "Sofia", profession: "farmer", 
+          criminal: false, photo: "images/sofia.jpg", 
+          hint: "Hey! Who took all my carrots?", proof: [[12]] 
         },
         { 
-          name: "Pol", profession: "rip", 
-          criminal: false, photo: "images/pol.png", 
-          hint: "En Guillem és 1 dels 2 criminals veïns d'en Xavi 2", proof: [[]] 
+          name: "Tyler", profession: "cook", 
+          criminal: true, photo: "images/tyler.jpg", 
+          hint: "Quita is one of 3 innocents below Debra", proof: [[3]] 
         },
+        { 
+          name: "Uma", profession: "bunny", 
+          criminal: true, photo: "images/uma.jpg", 
+          hint: "But... Bob! You said you loved my carrot cake!", proof: [[1]] 
+        },
+        { 
+          name: "Vince", profession: "sleuth", 
+          criminal: false, photo: "images/vince.jpg", 
+          hint: "Each row has at least one criminal", proof: [[4]] 
+        },
+        { 
+          name: "Will", profession: "cop", 
+          criminal: false, photo: "images/will.jpg", 
+          hint: "Both criminals below Bob are connected", proof: [[1]] 
+        },
+        { 
+          name: "Xavi", profession: "judge", 
+          criminal: true, photo: "images/xavi.jpg", 
+          hint: "Only one person in a corner has no innocent neighbors", proof: [[19]] 
+        },
+        { 
+          name: "Zach", profession: "painter", 
+          criminal: false, photo: "images/zach.jpg", 
+          hint: "Uh, oh. Did we just start a family drama?", proof: [[7]] 
+        }
       ],
       hints: []
     };
-    const STORAGE_KEY = `cluesbywiris-local-${PUZZLE.date}`;
+    const STORAGE_KEY = `aruafeka-local-${PUZZLE.date}`;
     const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
     const TAGS = ["", "amber", "blue", "pink", "green"];
     const AVATARS = ["#e3c36f", "#88b6bd", "#d58d78", "#9ebf87", "#c6a5c8", "#e1a85c", "#8fa9d8", "#c6b88e"];
