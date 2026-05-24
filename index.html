@@ -1189,42 +1189,65 @@
     }
 
     function renderBoard() {
-      boardEl.innerHTML = "";
+      // 1. INITIALIZATION: Build the HTML elements ONLY if the board is empty
+      if (boardEl.children.length === 0) {
+        PUZZLE.cards.forEach((card, index) => {
+          const cardEl = document.createElement("button");
+          cardEl.type = "button";
+          cardEl.style.setProperty("--avatar", AVATARS[index % AVATARS.length]);
+          
+          // Set the base HTML structure (images load exactly once here)
+          cardEl.innerHTML = `
+            <span class="card-top">
+              <span class="coord">${coord(index)}</span>
+              <span class="portrait"><img src="${card.photo}" alt=""></span>
+              <span class="tag-btn" role="button" aria-label="Etiqueta ${displayName(card.name)}">
+                <span class="tag-dot"></span>
+              </span>
+            </span>
+            <span>
+              <span class="card-name">${displayName(card.name)}</span>
+              <span class="profession"></span>
+            </span>
+            <span class="clue"></span>
+          `;
+
+          // Attach static event listeners
+          cardEl.addEventListener("click", () => onCardClick(index));
+          cardEl.querySelector(".tag-btn").addEventListener("click", event => cycleTag(index, event));
+          
+          boardEl.appendChild(cardEl);
+        });
+      }
+
+      // 2. UPDATE: Loop through the existing elements and update their dynamic state
       PUZZLE.cards.forEach((card, index) => {
         const revealed = state.revealed.has(index);
         const tagName = TAGS[state.tags[index] || 0];
-        const cardEl = document.createElement("button");
-        cardEl.type = "button";
+        const cardEl = boardEl.children[index]; // Target the existing card
+
+        // Update the main button classes
         cardEl.className = [
           "card",
           revealed ? "revealed" : "hidden",
-          revealed ? cssClass(card.criminal) : "", // Utilitza la nova funció del CSS
+          revealed ? cssClass(card.criminal) : "",
           state.selected === index ? "selected" : "",
           state.consumed.has(index) ? "consumed" : ""
         ].filter(Boolean).join(" ");
-        cardEl.style.setProperty("--avatar", AVATARS[index % AVATARS.length]);
-        cardEl.setAttribute("aria-label", `${coord(index)} ${displayName(card.name)}, ${card.profession}`);
-        cardEl.addEventListener("click", () => onCardClick(index));
         
-        cardEl.innerHTML = `
-          <span class="card-top">
-            <span class="coord">${coord(index)}</span>
-            <span class="portrait"><img src="${card.photo}" alt=""></span>
-            <span class="tag-btn" role="button" aria-label="Etiqueta ${displayName(card.name)}">
-              <span class="tag-dot ${tagName ? `tag-${tagName}` : ""}"></span>
-            </span>
-          </span>
-          <span>
-            <span class="card-name">${displayName(card.name)}</span>
-            <span class="profession">${state.revealed.has(index) ? '' : card.profession}</span>
-          </span>
-          <span class="clue">
-            ${revealed ? formatClue(card.hint, index) : "Pista amagada"}
-          </span>
-        `;
+        cardEl.setAttribute("aria-label", `${coord(index)} ${displayName(card.name)}, ${card.profession}`);
 
-        cardEl.querySelector(".tag-btn").addEventListener("click", event => cycleTag(index, event));
-        boardEl.appendChild(cardEl);
+        // Update the tag dot color
+        const tagDot = cardEl.querySelector(".tag-dot");
+        tagDot.className = `tag-dot ${tagName ? `tag-${tagName}` : ""}`;
+
+        // Update the profession text (hide it if revealed)
+        const profEl = cardEl.querySelector(".profession");
+        profEl.textContent = revealed ? "" : card.profession;
+
+        // Update the clue text
+        const clueEl = cardEl.querySelector(".clue");
+        clueEl.textContent = revealed ? formatClue(card.hint, index) : "Pista amagada";
       });
     }
 
