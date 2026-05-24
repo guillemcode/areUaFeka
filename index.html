@@ -1212,12 +1212,12 @@
         cardEl.innerHTML = `
           <span class="card-top">
             <span class="coord">${coord(index)}</span>
+            ${portrait}
             <span class="tag-btn" role="button" aria-label="Etiqueta ${displayName(card.name)}">
               <span class="tag-dot ${tagName ? `tag-${tagName}` : ""}"></span>
             </span>
           </span>
           <span>
-            ${portrait}
             <span class="card-name">${displayName(card.name)}</span>
             <span class="profession">${card.profession}</span>
           </span>
