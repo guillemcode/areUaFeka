@@ -253,6 +253,7 @@
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0;
+      width: 27px;
     }
 
     .tag-btn {
@@ -287,7 +288,7 @@
       overflow: hidden;
       display: grid;
       place-items: center;
-      margin: 0 auto 8px;
+      margin: 0 auto 4px;
       background:
         linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
         var(--avatar, #d9d0be);
@@ -785,9 +786,9 @@
       { name: "Moni", profession: "m - woman", photo: "images/moni.jpg" }, // 14
       { name: "Roger", profession: "gumeg", photo: "images/roger.jpg" },   // 15
       { name: "Zoe", profession: "minnie", photo: "images/zoe.jpg" },// 16
-      { name: "Alex", profession: "Martous", photo: "images/.jpg" },   // 17
+      { name: "Alex", profession: "Martous", photo: "images/martos.jpg" },   // 17
       { name: "Mariona", profession: "c. teacher", photo: "images/mariona.jpg" },  // 18
-      { name: "Guillem", profession: "iscalatore", photo: "images/.jpg" }  // 19
+      { name: "Guillem", profession: "iscalatore", photo: "images/guillem.jpg" }  // 19
     ];
   
     const PUZZLE_LOGIC = [
@@ -1208,7 +1209,7 @@
         const portrait = card.photo
           ? `<span class="portrait"><img src="${card.photo}" alt=""></span>`
           : `<span class="portrait" aria-hidden="true">${initials(card)}</span>`;
-
+        
         cardEl.innerHTML = `
           <span class="card-top">
             <span class="coord">${coord(index)}</span>
@@ -1219,7 +1220,7 @@
           </span>
           <span>
             <span class="card-name">${displayName(card.name)}</span>
-            <span class="profession">${card.profession}</span>
+            <span class="profession">${state.revealed.has(index) ? '' : card.profession}</span>
           </span>
           <span class="clue">
             ${revealed ? formatClue(card.hint, index) : "Pista amagada"}
