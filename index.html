@@ -164,20 +164,23 @@
 
     .board {
       display: grid;
-      grid-template-columns: repeat(4, minmax(92px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(5, minmax(0, 1fr)); /* Divide evenly into 5 rows */
       gap: 8px;
+      height: calc(100vh - 120px); /* Fill the screen minus the header space */
+      min-height: 500px; /* Don't let it get impossibly small */
     }
 
     .card {
       position: relative;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      min-height: 184px;
+      grid-template-rows: auto minmax(0, 1fr) auto; /* Lets the card squish safely */
+      height: 100%; /* Takes up exactly 1 cell of the board */
       border: 1px solid var(--line);
       border-radius: var(--card-radius);
       background: var(--panel);
       color: var(--ink);
-      padding: 8px;
+      padding: 6px;
       overflow: hidden;
       text-align: left;
     }
@@ -345,15 +348,16 @@
     }
 
     .clue {
-      margin-top: 9px;
-      padding: 8px;
+      margin-top: 6px;
+      padding: 6px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(0, 0, 0, 0.07);
-      font-size: 0.82rem;
-      line-height: 1.28;
+      font-size: 0.78rem;
+      line-height: 1.25;
       color: #3b362f;
-      min-height: 58px;
+      overflow-y: auto; /* Allows scrolling if text is too long */
+      max-height: 65px; /* Prevents the text from taking over the whole card */
     }
 
     .hidden .clue {
@@ -658,8 +662,7 @@
       }
 
       .card {
-        min-height: 164px;
-        padding: 6px;
+        padding: 4px;
       }
 
       .portrait {
@@ -680,9 +683,9 @@
       }
 
       .clue {
-        font-size: 0.72rem;
-        min-height: 54px;
-        padding: 6px;
+        font-size: 0.70rem;
+        padding: 4px;
+        max-height: 50px;
       }
 
       .stats {
@@ -993,6 +996,10 @@
     function onCardClick(index) {
       state.selected = index;
       render();
+      if(state.revealed.has(index)) {
+        toggleConsumed(index);
+        return;
+      }
       openChoiceDialog(index);
     }
 
@@ -1058,7 +1065,7 @@
       choiceClue.textContent = revealed ? formatClue(card.hint, index) : "Què vols marcar?";
       choiceActions.innerHTML = "";
 
-      if (revealed) {
+      /* if (revealed) {
         const toggle = document.createElement("button");
         toggle.type = "button";
         toggle.textContent = state.consumed.has(index) ? "Recupera pista" : "Marca pista usada";
@@ -1073,7 +1080,7 @@
         close.textContent = "Tanca";
         close.addEventListener("click", closeChoiceDialog);
         choiceActions.append(toggle, close);
-      } else {
+      } else { */
         const close = document.createElement("button");
         close.type = "button";
         close.textContent = "Cancel·la";
@@ -1091,7 +1098,7 @@
         criminal.textContent = "Guarro";
         criminal.addEventListener("click", () => guess(index, true));
         choiceActions.append(close, innocent, criminal);
-      }
+      //}
 
       if (choiceDialog.showModal && !choiceDialog.open) {
         choiceDialog.showModal();
