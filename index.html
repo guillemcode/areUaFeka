@@ -792,12 +792,12 @@
     ];
   
     const PUZZLE_LOGIC = [
-      { criminal: true, hint: "There's an equal number of Guarros in columns A and B", proof: [2] }, // 0
-      { criminal: true, hint: "Don't look at me! I hate carrots.", proof: [9] }, // 1
-      { criminal: true, hint: "There's an odd number of Guarros above #NAME:16", proof: [10] }, // 2
-      { criminal: false, hint: "There are exactly 2 Not Guarros to the right of #NAME:4", proof: [7] }, // 3
-      { criminal: false, hint: "#NAME:1, if I were you, I'd just take the blame.", proof: [18] }, // 4
-      { criminal: true, hint: "Only 1 of the 5 Guarros neighboring #NAME:9 is to the right of #NAME:12", proof: [9] }, // 5
+      { criminal: true, hint: "Hia mateix nº de guarros a les col A i B", proof: [2] }, // 0
+      { criminal: true, hint: "IOIOIOOOOOOLDIIII", proof: [9] }, // 1
+      { criminal: true, hint: "Hi ha un nº senar de guarros sobre #NAME:16", proof: [10] }, // 2
+      { criminal: false, hint: "Hi ha exactament 2 no guarros a la dreta de #NAME:4", proof: [7] }, // 3
+      { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
+      { criminal: true, hint: "Només 1 dels 5 guarros veïns de #NAME:9 és a la dreta de #NAME:12", proof: [9] }, // 5
       { criminal: false, hint: "An odd number of Not Guarros in column A neighbor #NAME:9", proof: [3] }, // 6
       { criminal: false, hint: "There is only one Guarro in column D", proof: [15] }, // 7
       { criminal: true, hint: "#NAME:1! You never said that about my carrot cakes!", proof: [18] }, // 8
@@ -1205,15 +1205,11 @@
         cardEl.style.setProperty("--avatar", AVATARS[index % AVATARS.length]);
         cardEl.setAttribute("aria-label", `${coord(index)} ${displayName(card.name)}, ${card.profession}`);
         cardEl.addEventListener("click", () => onCardClick(index));
-
-        const portrait = card.photo
-          ? `<span class="portrait"><img src="${card.photo}" alt=""></span>`
-          : `<span class="portrait" aria-hidden="true">${initials(card)}</span>`;
         
         cardEl.innerHTML = `
           <span class="card-top">
             <span class="coord">${coord(index)}</span>
-            ${portrait}
+            <span class="portrait"><img src="${card.photo}" alt=""></span>
             <span class="tag-btn" role="button" aria-label="Etiqueta ${displayName(card.name)}">
               <span class="tag-dot ${tagName ? `tag-${tagName}` : ""}"></span>
             </span>
