@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clues by WIRIS</title>
+  <title>Are U a Guarro?</title>
   <style>
     :root {
       color-scheme: light;
@@ -695,7 +695,7 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <h1>Clues by WIRIS</h1>
+        <h1>Are U a Guarro?</h1>
       </div>
     </header>
 
@@ -723,7 +723,7 @@
         <div class="sidebar-actions" aria-live="polite">
           <p id="selected-copy" class="selected-copy"></p>
           <div class="tool-row side-tools">
-            <button id="hint-btn" type="button">Pista</button>
+            <!-- <button id="hint-btn" type="button">Pista</button> -->
             <button id="restart-btn" type="button">Reinicia</button>
             <button id="share-btn" type="button">Copia resultat</button>
           </div>
@@ -764,118 +764,70 @@
   </dialog>
 
   <script>
+    const PEOPLE = [
+      { name: "Marc", profession: "Esquerranous", photo: "images/alex.jpg" }, // Index 0
+      { name: "Carlota", profession: "real PD", photo: "images/bob.jpg" },   // Index 1
+      { name: "Valls", profession: "huevo duro", photo: "images/carol.jpg" }, // Index 2
+      { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/debra.jpg" }, // Index 3
+      { name: "Ferrando", profession: "NE PE", photo: "images/eric.jpg" },   // Index 4
+      { name: "Oscar", profession: "Beneditosaura", photo: "images/gabe.jpg" }, // Index 5
+      { name: "Clara", profession: "TOIApia", photo: "images/hilda.jpg" }, // Index 6
+      { name: "Vicky", profession: "huuummus", photo: "images/john.jpg" },  // Index 7
+      { name: "Iker", profession: "le petit p", photo: "images/katie.jpg" }, // Index 8
+      { name: "Nai", profession: "insalata?", photo: "images/linda.jpg" },// Index 9
+      { name: "Jona", profession: "Jackson", photo: "images/petra.jpg" }, // Index 10
+      { name: "Enaitz", profession: "stylish boy", photo: "images/quita.jpg" },// Index 11
+      { name: "Jon", profession: "cocinero", photo: "images/rose.jpg" },  // Index 12
+      { name: "Albert", profession: "Chetaaaldo", photo: "images/sofia.jpg" }, // Index 13
+      { name: "Moni", profession: "m - woman", photo: "images/tyler.jpg" }, // Index 14
+      { name: "Roger", profession: "gumeg", photo: "images/uma.jpg" },   // Index 15
+      { name: "Zoe", profession: "minnie", photo: "images/vince.jpg" },// Index 16
+      { name: "Alex", profession: "Martous", photo: "images/will.jpg" },   // Index 17
+      { name: "Mariona", profession: "c. teacher", photo: "images/xavi.jpg" },  // Index 18
+      { name: "Guillem", profession: "iscalatore", photo: "images/zach.jpg" }  // Index 19
+    ];
+  
+    const PUZZLE_LOGIC1 = [
+      { criminal: true, hint: "There's an equal number of criminals in columns A and B", proof: [[2]] },
+      { criminal: true, hint: "Don't look at me! I hate carrots.", proof: [[9]] },
+      { criminal: true, hint: "There's an odd number of criminals above #NAME:16", proof: [[10]] },
+      { criminal: false, hint: "There are exactly 2 innocents to the right of #NAME:4", proof: [[7]] },
+      { criminal: false, hint: "#NAME:1, if I were you, I'd just take the blame.", proof: [[18]] },
+      { criminal: true, hint: "Only 1 of the 5 criminals neighboring #NAME:9 is to the right of #NAME:12", proof: [[9]] },
+      { criminal: false, hint: "An odd number of innocents in column A neighbor #NAME:9", proof: [[3]] },
+      { criminal: false, hint: "There is only one criminal in column D", proof: [[15]] },
+      { criminal: true, hint: "#NAME:1! You never said that about my carrot cakes!", proof: [[18]] },
+      { criminal: true, hint: "Both innocents in column B are connected", proof: [[17]] },
+      { criminal: true, hint: "There is only one innocent to the right of #NAME:0", proof: [[6]] },
+      { criminal: false, hint: "#NAME:10 and #NAME:14 have 2 innocent neighbors in common", proof: [[14]] },
+      { criminal: true, hint: "What have I done... Is it too late to return the carrots?", proof: [[18]] },
+      { criminal: false, hint: "Hey! Who took all my carrots?", proof: [[9]] },
+      { criminal: true, hint: "#NAME:11 is one of 3 innocents below #NAME:3", proof: [[5]] },
+      { criminal: true, hint: "But... #NAME:1! You said you loved my carrot cake!", proof: [[11]] },
+      { criminal: false, hint: "Each row has at least one criminal", proof: [[0]] },
+      { criminal: false, hint: "Both criminals below #NAME:1 are connected", proof: [[]] },
+      { criminal: true, hint: "Only one person in a corner has no innocent neighbors", proof: [[16]] },
+      { criminal: false, hint: "Uh, oh. Did we just start a family drama?", proof: [[15]] }
+    ];
+
+    var PUZZLE_LOGIC = PUZZLE_LOGIC1;
+
     const PUZZLE = {
-      date: "2026-05-24", // Data actualitzada per evitar problemes de memòria cau
-      dayLabel: "Diumenge, 24 maig 2026",
-      difficulty: "Custom",
+      date: "2026-05-25",
       width: 4,
       height: 5,
-      identityClue: "The stolen carrots family drama...",
-      initialReveals: [4], // Comencem destapant l'Eric (A2)
-      cards: [
-        { 
-          name: "Alex", profession: "guard", 
-          criminal: true, photo: "images/alex.jpg", 
-          hint: "There's an equal number of criminals in columns A and B", proof: [[16]] 
-        },
-        { 
-          name: "Bob", profession: "bunny", 
-          criminal: true, photo: "images/bob.jpg", 
-          hint: "Don't look at me! I hate carrots.", proof: [[4]] 
-        },
-        { 
-          name: "Carol", profession: "cook", 
-          criminal: true, photo: "images/carol.jpg", 
-          hint: "There's an odd number of criminals above Vince", proof: [[16]] 
-        },
-        { 
-          name: "Debra", profession: "judge", 
-          criminal: false, photo: "images/debra.jpg", 
-          hint: "There are exactly 2 innocents to the right of Eric", proof: [[4]] 
-        },
-        { 
-          name: "Eric", profession: "cop", 
-          criminal: false, photo: "images/eric.jpg", 
-          hint: "Bob, if I were you, I'd just take the blame.", proof: [] 
-        },
-        { 
-          name: "Gabe", profession: "farmer", 
-          criminal: true, photo: "images/gabe.jpg", 
-          hint: "Only 1 of the 5 criminals neighboring Linda is to the right of Rose", proof: [[9, 12]] 
-        },
-        { 
-          name: "Hilda", profession: "mech", 
-          criminal: false, photo: "images/hilda.jpg", 
-          hint: "An odd number of innocents in column A neighbor Linda", proof: [[9]] 
-        },
-        { 
-          name: "John", profession: "mech", 
-          criminal: false, photo: "images/john.jpg", 
-          hint: "There is only one criminal in column D", proof: [[3]] 
-        },
-        { 
-          name: "Katie", profession: "bunny", 
-          criminal: true, photo: "images/katie.jpg", 
-          hint: "Bob! You never said that about my carrot cakes!", proof: [[1]] 
-        },
-        { 
-          name: "Linda", profession: "farmer", 
-          criminal: true, photo: "images/linda.jpg", 
-          hint: "Both innocents in column B are connected", proof: [[1]] 
-        },
-        { 
-          name: "Petra", profession: "mech", 
-          criminal: true, photo: "images/petra.jpg", 
-          hint: "There is only one innocent to the right of Alex", proof: [[0]] 
-        },
-        { 
-          name: "Quita", profession: "painter", 
-          criminal: false, photo: "images/quita.jpg", 
-          hint: "Petra and Tyler have 2 innocent neighbors in common", proof: [[14]] 
-        },
-        { 
-          name: "Rose", profession: "judge", 
-          criminal: true, photo: "images/rose.jpg", 
-          hint: "What have I done... Is it too late to return the carrots?", proof: [[8]] 
-        },
-        { 
-          name: "Sofia", profession: "farmer", 
-          criminal: false, photo: "images/sofia.jpg", 
-          hint: "Hey! Who took all my carrots?", proof: [[12]] 
-        },
-        { 
-          name: "Tyler", profession: "cook", 
-          criminal: true, photo: "images/tyler.jpg", 
-          hint: "Quita is one of 3 innocents below Debra", proof: [[3]] 
-        },
-        { 
-          name: "Uma", profession: "bunny", 
-          criminal: true, photo: "images/uma.jpg", 
-          hint: "But... Bob! You said you loved my carrot cake!", proof: [[1]] 
-        },
-        { 
-          name: "Vince", profession: "sleuth", 
-          criminal: false, photo: "images/vince.jpg", 
-          hint: "Each row has at least one criminal", proof: [[4]] 
-        },
-        { 
-          name: "Will", profession: "cop", 
-          criminal: false, photo: "images/will.jpg", 
-          hint: "Both criminals below Bob are connected", proof: [[1]] 
-        },
-        { 
-          name: "Xavi", profession: "judge", 
-          criminal: true, photo: "images/xavi.jpg", 
-          hint: "Only one person in a corner has no innocent neighbors", proof: [[19]] 
-        },
-        { 
-          name: "Zach", profession: "painter", 
-          criminal: false, photo: "images/zach.jpg", 
-          hint: "Uh, oh. Did we just start a family drama?", proof: [[7]] 
-        }
-      ],
-      hints: []
+      cards: PUZZLE_LOGIC.map((logic, index) => {
+        return {
+          name: PEOPLE[index].name,
+          profession: PEOPLE[index].profession,
+          photo: PEOPLE[index].photo,
+          criminal: logic.criminal,
+          hint: logic.hint,
+          proof: logic.proof
+        };
+      }),
     };
+
     const STORAGE_KEY = `aruafeka-local-${PUZZLE.date}`;
     const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
     const TAGS = ["", "amber", "blue", "pink", "green"];
@@ -904,17 +856,19 @@
     const choiceClue = document.querySelector("#choice-clue");
     const choiceActions = document.querySelector("#choice-actions");
 
+    const initialReveal = PUZZLE.cards.indexOf(card => card.proof == [[]]);
+
     const state = loadState();
 
     function freshState() {
       return {
-        revealed: new Set(PUZZLE.initialReveals),
+        revealed: new Set(initialReveal),
         selected: null,
         consumed: new Set(),
         tags: {},
         attempts: 0,
         imperfections: [],
-        revealLog: [...PUZZLE.initialReveals],
+        revealLog: [...initialReveal],
         hint: null,
         hintStage: 0,
         pendingHintType: null,
@@ -932,11 +886,11 @@
         const loaded = {
           ...freshState(),
           ...saved,
-          revealed: new Set(saved.revealed || PUZZLE.initialReveals),
+          revealed: new Set(saved.revealed || initialReveal),
           consumed: new Set(saved.consumed || []),
           tags: saved.tags || {},
           imperfections: saved.imperfections || [],
-          revealLog: saved.revealLog || [...(saved.revealed || PUZZLE.initialReveals)],
+          revealLog: saved.revealLog || [...(saved.revealed || initialReveal)],
           startedAt: Date.now(),
           elapsedBase: saved.elapsedBase || 0
         };
@@ -1021,7 +975,7 @@
     }
 
     function traitName(isCriminal) {
-      return isCriminal ? "criminal" : "innocent";
+      return isCriminal ? "guarro" : "no guarro";
     }
 
     function isProven(index) {
@@ -1034,7 +988,7 @@
       return PUZZLE.cards[index].criminal === isCriminal && isProven(index);
     }
 
-    function findHint() {
+    /* function findHint() {
       const revealed = state.revealed;
       const exact = PUZZLE.hints
         .filter(hint => hint.flipped.every(index => revealed.has(index)))
@@ -1058,7 +1012,7 @@
       if (!candidates.length) return null;
       const first = candidates[0];
       return { clues: first.path, reveals: [first.index] };
-    }
+    } */
 
     function onCardClick(index) {
       state.selected = index;
@@ -1158,13 +1112,13 @@
         const innocent = document.createElement("button");
         innocent.type = "button";
         innocent.className = "innocent-btn";
-        innocent.textContent = "Innocent";
+        innocent.textContent = "Not Guarro";
         innocent.addEventListener("click", () => guess(index, false));
 
         const criminal = document.createElement("button");
         criminal.type = "button";
         criminal.className = "criminal-btn";
-        criminal.textContent = "Criminal";
+        criminal.textContent = "Guarro";
         criminal.addEventListener("click", () => guess(index, true));
         choiceActions.append(close, innocent, criminal);
       }
@@ -1181,7 +1135,7 @@
       choiceDialog.close();
     }
 
-    function showHint() {
+    /* function showHint() {
       if (state.hintStage === 0) {
         const hint = findHint();
         if (!hint) {
@@ -1201,7 +1155,7 @@
       }
       saveState();
       render();
-    }
+    } */
 
     function restart() {
       if (!confirm("Reiniciar el puzzle i esborrar el progrés local?")) return;
@@ -1232,7 +1186,7 @@
       const solved = state.revealed.size === PUZZLE.cards.length;
       const resultLine = solved ? "Resolució: completat" : `Progrés: ${state.revealed.size}/${PUZZLE.cards.length}`;
       return [
-        "Clues by WIRIS",
+        "Are U a Guarro?",
         resultLine,
         `Temps: ${formatTime(elapsedMs())}`,
         `Intents: ${state.attempts}`,
@@ -1405,7 +1359,7 @@
       completeBoxEl.innerHTML = `<strong>Cas tancat.</strong><span>${formatTime(elapsedMs())} · ${state.attempts} intents</span>`;
     }
 
-    hintBtn.addEventListener("click", showHint);
+    /* hintBtn.addEventListener("click", showHint); */
     restartBtn.addEventListener("click", restart);
     shareBtn.addEventListener("click", copyShare);
     noticeClose.addEventListener("click", () => dialog.close());
