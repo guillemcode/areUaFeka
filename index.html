@@ -856,7 +856,8 @@
     const choiceClue = document.querySelector("#choice-clue");
     const choiceActions = document.querySelector("#choice-actions");
 
-    const initialReveal = PUZZLE.cards.indexOf(card => card.proof == [[]]);
+    const foundIndex = PUZZLE.cards.findIndex(card => card.proof.length === 1 && card.proof[0].length === 0);
+    const initialReveal = [foundIndex];
 
     const state = loadState();
 
