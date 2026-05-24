@@ -854,7 +854,7 @@
     const choiceActions = document.querySelector("#choice-actions");
 
     const foundIndex = PUZZLE.cards.findIndex(card => card.proof && card.proof.length === 0);
-    const initialReveal = [foundIndex];
+    const initialReveal = foundIndex !== -1 ? [foundIndex] : [4];
 
     const state = loadState();
 
@@ -983,7 +983,7 @@
     function isProven(index) {
       if (state.revealed.has(index)) return false;
       const card = PUZZLE.cards[index];
-      return card.proof.some(path => path.every(item => state.revealed.has(item)));
+      return card.proof.every(item => state.revealed.has(item));
     }
 
     function validGuess(index, isCriminal) {
