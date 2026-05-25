@@ -639,18 +639,21 @@
         width: 100%; 
         padding: 8px; 
       }
+      
       .topbar { 
         grid-template-columns: 1fr; 
         align-items: start; 
         gap: 6px;
         margin-bottom: 12px;
       }
+      
       h1 { font-size: 1.45rem; }
       
       .board-shell, .side-panel { 
         padding: 6px; 
       }
       
+      /* Deixem que el tauler creixi cap avall perquè cap carta es talli */
       .board {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         grid-template-rows: auto; 
@@ -659,39 +662,34 @@
       }
 
       .card {
-        min-height: 165px; 
+        min-height: 165px; /* Alçada mínima segura */
+        padding: 4px;
       }
 
-      .portrait-container {
-        height: 80px; 
+      /* Convertim el contenidor superior en la "caixa" de la imatge */
+      .card-top {
+        position: relative; /* Serveix d'àncora per als elements flotants */
+        display: block;     /* Traiem el flexbox perquè es puguin superposar */
+        margin-bottom: 4px;
       }
 
-      .person-info {
+      .portrait {
         width: 100%;
-        padding: 0 2px;
-        bottom: 2px;
+        height: 80px; /* Reduïm la foto per deixar lloc al text */
+        margin: 0;
       }
 
-      .card-name { 
-        font-size: 0.65rem; 
-        line-height: 1; 
-        word-break: break-word; 
-      }
-
-      .profession { 
-        font-size: 0.55rem; 
-        margin-top: 2px;
-      }
-
-      /* COORDENADA FLOTANT AMB VORA BLANCA (SENSE FONS) */
+      /* Coordenada absolutament posicionada sobre la foto (A dalt a l'esquerra) */
       .coord { 
+        position: absolute; 
+        top: 4px; 
+        left: 4px; 
+        z-index: 10;
         font-size: 0.75rem; 
         padding: 0; 
         background: transparent; /* Traiem la caixa negra */
         color: #111;             /* Text fosc */
-        top: 4px; 
-        left: 4px; 
-        /* Efecte de vora blanca gruixuda per destacar sobre qualsevol foto */
+        /* Vora blanca gruixuda feta amb ombres */
         text-shadow: 
           -1.5px -1.5px 0 #fff,  
            1.5px -1.5px 0 #fff,
@@ -700,23 +698,36 @@
            0px 2px 3px rgba(0,0,0,0.6);
       }
 
-      /* PUNT DE COLOR A DALT A LA DRETA */
+      /* Botó absolutament posicionat sobre la foto (A dalt a la dreta) */
       .tag-btn { 
-        width: 20px; 
-        height: 20px; 
-        min-height: 20px; 
+        position: absolute; 
         top: 4px; 
         right: 4px; 
+        z-index: 10;
+        width: 22px; 
+        height: 22px; 
+        min-height: 22px; 
         border-width: 1.5px;
       }
       
       .tag-dot { width: 10px; height: 10px; }
+
+      .card-name { 
+        font-size: 0.65rem; 
+        line-height: 1; 
+        word-break: break-word; /* Obliga a saltar de línia els noms massa llargs */
+      }
+
+      .profession { 
+        font-size: 0.55rem; 
+        margin-top: 2px;
+      }
       
       .clue { 
         font-size: 0.64rem; 
         padding: 5px; 
         line-height: 1.15;
-        max-height: none; 
+        max-height: none; /* Les pistes llargues s'adaptaran sense desaparèixer */
       }
 
       .stats { 
@@ -831,7 +842,7 @@
       { criminal: false, hint: "Un nº senar de no guarros a la col A són veïns de #NAME:9", proof: [3] }, // 6
       { criminal: false, hint: "Només hi ha 1 guarro a la col D", proof: [15] }, // 7
       { criminal: true, hint: "#NAME:1! Vaya feka ets!", proof: [18] }, // 8
-      { criminal: true, hint: "Els 2 no guarros a la col B estan connectats", proof: [17] }, // 9
+      { criminal: true, hint: "Els 2 no guarros de la col B estan connectats", proof: [17] }, // 9
       { criminal: true, hint: "Només hi ha un no guarro a la dreta de #NAME:0", proof: [6] }, // 10
       { criminal: false, hint: "#NAME:10 i #NAME:14 tenen 2 no guarros veïns en comú", proof: [14] }, // 11
       { criminal: true, hint: "Un overcooked?", proof: [18] }, // 12
