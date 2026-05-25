@@ -480,10 +480,12 @@
     }
 
     .clue-item.consumed {
-      opacity: 0.55;
+      display: none;
+      /* opacity: 0.55;
       text-decoration: line-through;
-      text-decoration-thickness: 1px;
+      text-decoration-thickness: 1px; */
     }
+
 
     .clue-index {
       font-size: 0.72rem;
@@ -621,77 +623,37 @@
       .layout {
         grid-template-columns: 1fr;
       }
-
-      .side-panel {
-        order: -1;
+      .board-shell {
+        order: 1; /* El tauler va primer */
       }
-
+      .side-panel {
+        order: 2; /* Els botons i estadístiques van sota el tauler */
+      }
       .clue-list {
         max-height: 260px;
       }
     }
 
     @media (max-width: 680px) {
-      .app {
-        width: min(100% - 16px, 680px);
-        padding-top: 12px;
-      }
-
-      .topbar {
-        grid-template-columns: 1fr;
-        align-items: start;
-      }
-
-      h1 {
-        font-size: 1.55rem;
-      }
-
-      .weekday-strip {
-        justify-content: start;
-        grid-template-columns: repeat(7, minmax(31px, 1fr));
-        width: 100%;
-      }
-
-      .board-shell,
-      .side-panel {
-        padding: 10px;
-      }
-
+      .app { width: min(100% - 16px, 680px); padding-top: 12px; }
+      .topbar { grid-template-columns: 1fr; align-items: start; }
+      h1 { font-size: 1.55rem; }
+      .board-shell, .side-panel { padding: 8px; }
+      
       .board {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
+        gap: 4px; /* Ens ajustem per encabir les 4 columnes sense tallar */
       }
-
-      .card {
-        padding: 4px;
+      .portrait-container {
+        height: 105px; /* Reduïm alçada al mòbil per fer cartes més proporcionades */
       }
-
-      .portrait {
-        width: 49px;
-        height: 49px;
-        font-size: 1rem;
-        margin-bottom: 6px;
-      }
-
-      .card-name {
-        font-size: 0.78rem;
-      }
-
-      .profession,
-      .coord,
-      .status {
-        font-size: 0.66rem;
-      }
-
-      .clue {
-        font-size: 0.70rem;
-        padding: 4px;
-        max-height: 50px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
+      .card-name { font-size: 0.75rem; }
+      .profession { font-size: 0.6rem; }
+      .coord { font-size: 0.65rem; padding: 1px 4px; top: 4px; left: 4px; }
+      .tag-btn { width: 22px; height: 22px; min-height: 22px; top: 4px; right: 4px; }
+      .tag-dot { width: 10px; height: 10px; }
+      .clue { font-size: 0.68rem; padding: 4px; }
+      .stats { grid-template-columns: 1fr 1fr 1fr; }
     }
   </style>
 </head>
