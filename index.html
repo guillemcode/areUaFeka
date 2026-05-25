@@ -651,20 +651,19 @@
         padding: 6px; 
       }
       
-      /* Deixem que el tauler creixi cap avall i l'usuari pugui fer scroll */
       .board {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows: auto; /* Alliberem les files comprimides */
-        height: auto;             /* Traiem la restricció d'alçada de la pantalla */
+        grid-template-rows: auto; 
+        height: auto;             
         gap: 4px;
       }
 
       .card {
-        min-height: 165px; /* Alçada mínima per garantir que hi cap tot */
+        min-height: 165px; 
       }
 
       .portrait-container {
-        height: 80px; /* Reduïm la foto per deixar lloc al text de sota */
+        height: 80px; 
       }
 
       .person-info {
@@ -676,7 +675,7 @@
       .card-name { 
         font-size: 0.65rem; 
         line-height: 1; 
-        word-break: break-word; /* Obliga a saltar de línia si el nom és massa llarg */
+        word-break: break-word; 
       }
 
       .profession { 
@@ -684,29 +683,40 @@
         margin-top: 2px;
       }
 
+      /* COORDENADA FLOTANT AMB VORA BLANCA (SENSE FONS) */
       .coord { 
-        font-size: 0.6rem; 
-        padding: 1px 4px; 
+        font-size: 0.75rem; 
+        padding: 0; 
+        background: transparent; /* Traiem la caixa negra */
+        color: #111;             /* Text fosc */
         top: 4px; 
         left: 4px; 
+        /* Efecte de vora blanca gruixuda per destacar sobre qualsevol foto */
+        text-shadow: 
+          -1.5px -1.5px 0 #fff,  
+           1.5px -1.5px 0 #fff,
+          -1.5px  1.5px 0 #fff,
+           1.5px  1.5px 0 #fff,
+           0px 2px 3px rgba(0,0,0,0.6);
       }
 
+      /* PUNT DE COLOR A DALT A LA DRETA */
       .tag-btn { 
         width: 20px; 
         height: 20px; 
         min-height: 20px; 
         top: 4px; 
         right: 4px; 
-        border-width: 1px;
+        border-width: 1.5px;
       }
       
-      .tag-dot { width: 8px; height: 8px; }
+      .tag-dot { width: 10px; height: 10px; }
       
       .clue { 
         font-size: 0.64rem; 
         padding: 5px; 
         line-height: 1.15;
-        max-height: none; /* Deixem que la pista ocupi l'espai que necessiti */
+        max-height: none; 
       }
 
       .stats { 
@@ -812,26 +822,26 @@
     ];
   
     const PUZZLE_LOGIC = [
-      { criminal: true, hint: "Hia mateix nº de guarros a les col A i B", proof: [2] }, // 0
+      { criminal: true, hint: "Hi ha mateix nº de guarros a les col A i B", proof: [2] }, // 0
       { criminal: true, hint: "IOIOIOOOOOOLDIIII", proof: [9] }, // 1
-      { criminal: true, hint: "Hi ha un nº senar de guarros sobre #NAME:16", proof: [10] }, // 2
+      { criminal: true, hint: "Hi ha un nº senar de guarros sobre de #NAME:16", proof: [10] }, // 2
       { criminal: false, hint: "Hi ha exactament 2 no guarros a la dreta de #NAME:4", proof: [7] }, // 3
       { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
       { criminal: true, hint: "Només 1 dels 5 guarros veïns de #NAME:9 és a la dreta de #NAME:12", proof: [9] }, // 5
-      { criminal: false, hint: "An odd number of Not Guarros in column A neighbor #NAME:9", proof: [3] }, // 6
-      { criminal: false, hint: "There is only one Guarro in column D", proof: [15] }, // 7
-      { criminal: true, hint: "#NAME:1! You never said that about my carrot cakes!", proof: [18] }, // 8
-      { criminal: true, hint: "Both Not Guarros in column B are connected", proof: [17] }, // 9
-      { criminal: true, hint: "There is only one Not Guarro to the right of #NAME:0", proof: [6] }, // 10
-      { criminal: false, hint: "#NAME:10 and #NAME:14 have 2 Not Guarro neighbors in common", proof: [14] }, // 11
-      { criminal: true, hint: "What have I done... Is it too late to return the carrots?", proof: [18] }, // 12
-      { criminal: false, hint: "Hey! Who took all my carrots?", proof: [9] }, // 13
-      { criminal: true, hint: "#NAME:11 is one of 3 Not Guarros below #NAME:3", proof: [5] }, // 14
-      { criminal: true, hint: "But... #NAME:1! You said you loved my carrot cake!", proof: [11] }, // 15
-      { criminal: false, hint: "Each row has at least one Guarro", proof: [0] }, // 16
-      { criminal: false, hint: "Both Guarros below #NAME:1 are connected", proof: [] }, // 17
-      { criminal: true, hint: "Only one person in a corner has no Not Guarro neighbors", proof: [16] }, // 18
-      { criminal: false, hint: "Uh, oh. Did we just start a family drama?", proof: [15] } // 19
+      { criminal: false, hint: "Un nº senar de no guarros a la col A són veïns de #NAME:9", proof: [3] }, // 6
+      { criminal: false, hint: "Només hi ha 1 guarro a la col D", proof: [15] }, // 7
+      { criminal: true, hint: "#NAME:1! Vaya feka ets!", proof: [18] }, // 8
+      { criminal: true, hint: "Els 2 no guarros a la col B estan connectats", proof: [17] }, // 9
+      { criminal: true, hint: "Només hi ha un no guarro a la dreta de #NAME:0", proof: [6] }, // 10
+      { criminal: false, hint: "#NAME:10 i #NAME:14 tenen 2 no guarros veïns en comú", proof: [14] }, // 11
+      { criminal: true, hint: "Un overcooked?", proof: [18] }, // 12
+      { criminal: false, hint: "Sí, jo m'apunto a un overcooked!", proof: [9] }, // 13
+      { criminal: true, hint: "#NAME:11 és un dels 3 no guarros sota de #NAME:3", proof: [5] }, // 14
+      { criminal: true, hint: "Però... #NAME:1! Vas dir que volies fer habibi!", proof: [11] }, // 15
+      { criminal: false, hint: "Cada fila té com a mínim un guarro", proof: [0] }, // 16
+      { criminal: false, hint: "Els 2 guarros sota de #NAME:1 estan connectats", proof: [] }, // 17
+      { criminal: true, hint: "Només una persona de les cantonades no té no guarros veïns", proof: [16] }, // 18
+      { criminal: false, hint: "Ehhhm... ollita?", proof: [15] } // 19
     ];
 
     const PUZZLE = {
@@ -1001,7 +1011,7 @@
       return isCriminal ? "criminal" : "innocent";
     }
     function traitText(isCriminal) {
-      return isCriminal ? "Guarro" : "Not Guarro";
+      return isCriminal ? "guarro" : "no guarro";
     }
 
     function isProven(index) {
@@ -1110,13 +1120,13 @@
         const innocent = document.createElement("button");
         innocent.type = "button";
         innocent.className = "innocent-btn";
-        innocent.textContent = "Not Guarro";
+        innocent.textContent = "not guarro";
         innocent.addEventListener("click", () => guess(index, false));
 
         const criminal = document.createElement("button");
         criminal.type = "button";
         criminal.className = "criminal-btn";
-        criminal.textContent = "Guarro";
+        criminal.textContent = "guarro";
         criminal.addEventListener("click", () => guess(index, true));
         choiceActions.append(close, innocent, criminal);
       //}
