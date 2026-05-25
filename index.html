@@ -635,25 +635,83 @@
     }
 
     @media (max-width: 680px) {
-      .app { width: min(100% - 16px, 680px); padding-top: 12px; }
-      .topbar { grid-template-columns: 1fr; align-items: start; }
-      h1 { font-size: 1.55rem; }
-      .board-shell, .side-panel { padding: 8px; }
+      .app { 
+        width: 100%; 
+        padding: 8px; 
+      }
+      .topbar { 
+        grid-template-columns: 1fr; 
+        align-items: start; 
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      h1 { font-size: 1.45rem; }
       
+      .board-shell, .side-panel { 
+        padding: 6px; 
+      }
+      
+      /* Deixem que el tauler creixi cap avall i l'usuari pugui fer scroll */
       .board {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 4px; /* Ens ajustem per encabir les 4 columnes sense tallar */
+        grid-template-rows: auto; /* Alliberem les files comprimides */
+        height: auto;             /* Traiem la restricció d'alçada de la pantalla */
+        gap: 4px;
       }
+
+      .card {
+        min-height: 165px; /* Alçada mínima per garantir que hi cap tot */
+      }
+
       .portrait-container {
-        height: 105px; /* Reduïm alçada al mòbil per fer cartes més proporcionades */
+        height: 80px; /* Reduïm la foto per deixar lloc al text de sota */
       }
-      .card-name { font-size: 0.75rem; }
-      .profession { font-size: 0.6rem; }
-      .coord { font-size: 0.65rem; padding: 1px 4px; top: 4px; left: 4px; }
-      .tag-btn { width: 22px; height: 22px; min-height: 22px; top: 4px; right: 4px; }
-      .tag-dot { width: 10px; height: 10px; }
-      .clue { font-size: 0.68rem; padding: 4px; }
-      .stats { grid-template-columns: 1fr 1fr 1fr; }
+
+      .person-info {
+        width: 100%;
+        padding: 0 2px;
+        bottom: 2px;
+      }
+
+      .card-name { 
+        font-size: 0.65rem; 
+        line-height: 1; 
+        word-break: break-word; /* Obliga a saltar de línia si el nom és massa llarg */
+      }
+
+      .profession { 
+        font-size: 0.55rem; 
+        margin-top: 2px;
+      }
+
+      .coord { 
+        font-size: 0.6rem; 
+        padding: 1px 4px; 
+        top: 4px; 
+        left: 4px; 
+      }
+
+      .tag-btn { 
+        width: 20px; 
+        height: 20px; 
+        min-height: 20px; 
+        top: 4px; 
+        right: 4px; 
+        border-width: 1px;
+      }
+      
+      .tag-dot { width: 8px; height: 8px; }
+      
+      .clue { 
+        font-size: 0.64rem; 
+        padding: 5px; 
+        line-height: 1.15;
+        max-height: none; /* Deixem que la pista ocupi l'espai que necessiti */
+      }
+
+      .stats { 
+        grid-template-columns: 1fr 1fr 1fr; 
+      }
     }
   </style>
 </head>
@@ -1203,9 +1261,9 @@
         const tagDot = cardEl.querySelector(".tag-dot");
         tagDot.className = `tag-dot ${tagName ? `tag-${tagName}` : ""}`;
 
-        // Update the profession text (hide it if revealed)
+        // Update the profession text
         const profEl = cardEl.querySelector(".profession");
-        profEl.textContent = revealed ? "" : card.profession;
+        profEl.textContent = card.profession;
 
         // Update the clue text
         const clueEl = cardEl.querySelector(".clue");
