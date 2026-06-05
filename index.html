@@ -662,7 +662,7 @@
       }
 
       .card {
-        min-height: 150px; /* Alçada mínima segura */
+        min-height: 100px; /* Alçada mínima segura */
         padding: 4px;
       }
 
@@ -676,7 +676,7 @@
       .portrait {
         width: 100%;
         height: auto;          /* Deixem que l'alçada es calculi sola */
-        aspect-ratio: 2 / 1;   /* Força que l'alçada sigui la meitat de l'amplada */
+        aspect-ratio: 4 / 3;   /* Força que l'alçada sigui la meitat de l'amplada */
         margin: 0;
       }
 
@@ -725,7 +725,7 @@
       }
       
       .clue { 
-        font-size: 0.4rem; 
+        font-size: 0.45rem; 
         padding: 2px; 
         line-height: 1;
         max-height: none; /* Les pistes llargues s'adaptaran sense desaparèixer */
@@ -827,8 +827,10 @@
       }
     };
     const activeTheme = THEMES[currentGroup];
-    const activeTrait = activeTheme.trait
-    const activeNotTrait = activeTheme.notTrait
+    const activeTrait = activeTheme.trait;
+    const activeNotTrait = activeTheme.notTrait;
+    const isGuarroak = currentGroup == 'guarroak';
+    const isRoco = currentGroup == 'roco';
 
     // Actualitzar el títol de la pestanya i l'H1 de la pàgina dinàmicament
     document.title = activeTheme.title;
@@ -836,58 +838,75 @@
 
     // 2. DEFINIR ELS PERSONATGES DEPENENT DEL GRUP
     const PEOPLE_GUARROAK = [
-      { name: "Marc", profession: "Esquerranous", photo: "images/marc.jpg" }, // 0
-      { name: "Carlota", profession: "real PD", photo: "images/carlota.jpg" },   // 1
-      { name: "Valls", profession: "huevo duro", photo: "images/valls.jpg" }, // 2
-      { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/jordi.jpg" }, // 3
-      { name: "Ferrando", profession: "NE PE", photo: "images/ferrando.jpg" },   // 4
-      { name: "Oscar", profession: "Beneditosaura", photo: "images/oscar.jpg" }, // 5
-      { name: "Clara", profession: "TOIApia", photo: "images/clara.jpg" }, // 6
-      { name: "Vicky", profession: "huuummus", photo: "images/vicky.jpg" },  // 7
-      { name: "Iker", profession: "le petit p", photo: "images/iker.jpg" }, // 8
-      { name: "Nai", profession: "insalata?", photo: "images/nai.jpg" },// 9
-      { name: "Jona", profession: "Jackson", photo: "images/jona.jpg" }, // 10
-      { name: "Enaitz", profession: "stylish boy", photo: "images/enaitz.jpg" },// 11
-      { name: "Jon", profession: "cocinero", photo: "images/jon.jpg" },  // 12
-      { name: "Albert", profession: "Chetaaaldo", photo: "images/albert.jpg" }, // 13
-      { name: "Moni", profession: "m - woman", photo: "images/moni.jpg" }, // 14
-      { name: "Roger", profession: "gumeg", photo: "images/roger.jpg" },   // 15
-      { name: "Zoe", profession: "minnie", photo: "images/zoe.jpg" },// 16
-      { name: "Alex", profession: "Martous", photo: "images/martos.jpg" },   // 17
-      { name: "Mariona", profession: "c. teacher", photo: "images/mariona.jpg" },  // 18
-      { name: "Guillem", profession: "iscalatore", photo: "images/guillem.jpg" }  // 19
+      { name: "Marc", profession: "Esquerranous", photo: "images/guarroak/marc.jpg" }, // 0
+      { name: "Carlota", profession: "real PD", photo: "images/guarroak/carlota.jpg" },   // 1
+      { name: "Valls", profession: "huevo duro", photo: "images/guarroak/valls.jpg" }, // 2
+      { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/guarroak/jordi.jpg" }, // 3
+      { name: "Ferrando", profession: "NE PE", photo: "images/guarroak/ferrando.jpg" },   // 4
+      { name: "Oscar", profession: "Beneditosaura", photo: "images/guarroak/oscar.jpg" }, // 5
+      { name: "Clara", profession: "TOIApia", photo: "images/guarroak/clara.jpg" }, // 6
+      { name: "Vicky", profession: "huuummus", photo: "images/guarroak/vicky.jpg" },  // 7
+      { name: "Iker", profession: "le petit p", photo: "images/guarroak/iker.jpg" }, // 8
+      { name: "Nai", profession: "insalata?", photo: "images/guarroak/nai.jpg" },// 9
+      { name: "Jona", profession: "Jackson", photo: "images/guarroak/jona.jpg" }, // 10
+      { name: "Enaitz", profession: "stylish boy", photo: "images/guarroak/enaitz.jpg" },// 11
+      { name: "Jon", profession: "cocinero", photo: "images/guarroak/jon.jpg" },  // 12
+      { name: "Albert", profession: "Chetaaaldo", photo: "images/guarroak/albert.jpg" }, // 13
+      { name: "Moni", profession: "m - woman", photo: "images/guarroak/moni.jpg" }, // 14
+      { name: "Roger", profession: "gumeg", photo: "images/guarroak/roger.jpg" },   // 15
+      { name: "Zoe", profession: "minnie", photo: "images/guarroak/zoe.jpg" },// 16
+      { name: "Alex", profession: "Martous", photo: "images/guarroak/martos.jpg" },   // 17
+      { name: "Mariona", profession: "c. teacher", photo: "images/guarroak/mariona.jpg" },  // 18
+      { name: "Guillem", profession: "iscalatore", photo: "images/guarroak/guillem.jpg" }  // 19
     ];
 
     const PEOPLE_ROCO = [
-      // ATENCIÓ: Has d'omplir això amb les 20 persones del grup Roco!
-      // (He posat 20 línies de farciment perquè el joc no peti fins que ho facis)
-      ...Array(20).fill({ name: "Nom Roco", profession: "Professió", photo: "images/placeholder.jpg" })
+      { name: "Roger", profession: "Dyno boy", photo: "images/roco/roger.jpg" }, // 0
+      { name: "Joan", profession: "Johan", photo: "images/roco/joan.jpg" },   // 1
+      { name: "Cris", profession: "Aguilera", photo: "images/roco/cris.jpg" }, // 2
+      { name: "Alba", profession: "Koala", photo: "images/roco/alba.jpg" }, // 3
+      { name: "Luis", profession: "Astronosequé", photo: "images/roco/luis.jpg" },   // 4
+      { name: "Oscar", profession: "Beneditosaura", photo: "images/roco/oscar.jpg" }, // 5
+      { name: "David", profession: "Aragonés", photo: "images/roco/david.jpg" }, // 6
+      { name: "Laura", profession: "Punkarra", photo: "images/roco/laura.jpg" },  // 7
+      { name: "Pablo", profession: "Fotos", photo: "images/roco/pablo.jpg" }, // 8
+      { name: "Guillem", profession: "the OG", photo: "images/roco/gyem.jpg" },// 9
+      { name: "Henar", profession: "Pollito", photo: "images/roco/henar.jpg" }, // 10
+      { name: "Josep", profession: "German", photo: "images/roco/josep.jpg" },// 11
+      { name: "Pau", profession: "Navalla", photo: "images/roco/pau.jpg" },  // 12
+      { name: "Alex", profession: "Oti 2.0", photo: "images/roco/alex.jpg" }, // 13
+      { name: "Sebas?", profession: "", photo: "images/roco/pp.jpg" }, // 14
+      { name: "", profession: "", photo: "images/roco/pp.jpg" },   // 15
+      { name: "", profession: "", photo: "images/roco/pp.jpg" },// 16
+      { name: "", profession: "", photo: "images/roco/pp.jpg" },   // 17
+      { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/roco/jordi.jpg" },  // 18
+      { name: "Guillem", profession: "Oscar", photo: "images/roco/guillem.jpg" }  // 19
     ];
 
     const PEOPLE = currentGroup === 'roco' ? PEOPLE_ROCO : PEOPLE_GUARROAK;
   
     // 3. DEFINIR LA LÒGICA DEPENENT DEL GRUP
     const PUZZLE_LOGIC_1 =(trait, notTrait) => [
-      { criminal: true, hint: `Hi ha mateix nº de ${trait}s a les col A i B`, proof: [2] }, // 0
-      { criminal: true, hint: currentGroup == 'guarroak' ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
+      { criminal: true, hint: `Hi ha mateix nº de ${trait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
+      { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
       { criminal: true, hint: `Hi ha un nº senar de ${trait} sobre de #NAME:16`, proof: [10] }, // 2
       { criminal: false, hint: `Hi ha exactament 2 ${notTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
       { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
       { criminal: true, hint: `Només 1 dels 5 ${trait}s veïns de #NAME:9 és a la dreta de #NAME:12`, proof: [9] }, // 5
       { criminal: false, hint: `Un nº senar de ${notTrait}s a la col A són veïns de #NAME:9`, proof: [3] }, // 6
       { criminal: false, hint: `Només hi ha 1 ${trait} a la col D`, proof: [15] }, // 7
-      { criminal: true, hint: `#NAME:1! Vaya ${currentGroup == 'guarroak' ? 'feka' : 'bon escalador'} ets!`, proof: [18] }, // 8
-      { criminal: true, hint: `Els 2 ${notTrait}s de la col B estan connectats`, proof: [17] }, // 9
+      { criminal: true, hint: `#NAME:1! Vaya ${!isRoco ? 'feka' : 'bon escalador'} ets!`, proof: [18] }, // 8
+      { criminal: true, hint: `E${isRoco ? '': 'l'}s 2 ${notTrait}s de la col B estan connectats`, proof: [17] }, // 9
       { criminal: true, hint: `Només hi ha un ${notTrait} a la dreta de #NAME:0`, proof: [6] }, // 10
       { criminal: false, hint: `#NAME:10 i #NAME:14 tenen 2 ${notTrait}s veïns en comú`, proof: [14] }, // 11
-      { criminal: true, hint: currentGroup == 'guarroak' ? "Un overcooked?" : 'Birreta?', proof: [18] }, // 12
-      { criminal: false, hint: `Sí, jo m'apunto a un${currentGroup == 'guarroak' ? ' overcooked' : 'a birreta'}!`, proof: [9] }, // 13
+      { criminal: true, hint: !isRoco ? "Un overcooked?" : 'Birreta?', proof: [18] }, // 12
+      { criminal: false, hint: `Sí, jo m'apunto a un${!isRoco ? ' overcooked' : 'a birreta'}!`, proof: [9] }, // 13
       { criminal: true, hint: `#NAME:11 és un dels 3 ${notTrait}s sota de #NAME:3`, proof: [5] }, // 14
-      { criminal: true, hint: "Però... #NAME:1! Vas dir que volies fer habibi!", proof: [11] }, // 15
+      { criminal: true, hint: `Però... #NAME:1! Vas dir que volies fer ${isRoco ? 'birreta' : 'habibi'}!`, proof: [11] }, // 15
       { criminal: false, hint: `Cada fila té com a mínim un ${trait}`, proof: [0] }, // 16
-      { criminal: false, hint: `Els 2 ${trait}s sota de #NAME:1 estan connectats`, proof: [] }, // 17
-      { criminal: true, hint: `Només una persona de les cantonades no té ${notTrait}s veïns`, proof: [16] }, // 18
-      { criminal: false, hint: currentGroup == 'guarroak' ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
+      { criminal: false, hint: `E${isRoco ? '' : 'l'}s 2 ${trait}s sota de #NAME:1 estan connectats`, proof: [] }, // 17
+      { criminal: true, hint: `Només una persona de ${isRoco ? 's' : 'l'}es cantonades no té ${notTrait}s veïns`, proof: [16] }, // 18
+      { criminal: false, hint: !isRoco ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
     ];
 
     const PUZZLE_LOGIC = PUZZLE_LOGIC_1(activeTrait, activeNotTrait);
