@@ -675,7 +675,8 @@
 
       .portrait {
         width: 100%;
-        height: 80px; /* Reduïm la foto per deixar lloc al text */
+        height: auto;          /* Deixem que l'alçada es calculi sola */
+        aspect-ratio: 2 / 1;   /* Força que l'alçada sigui la meitat de l'amplada */
         margin: 0;
       }
 
@@ -809,7 +810,32 @@
   </dialog>
 
   <script>
-    const PEOPLE = [
+    // 1. LLEGIR LA URL I CONFIGURAR EL TEMA
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentGroup = urlParams.get('group') === 'roco' ? 'roco' : 'guarroak';
+
+    const THEMES = {
+      guarroak: {
+        title: "Are U a Guarro?",
+        trait: "guarro",
+        notTrait: "no guarro"
+      },
+      roco: {
+        title: "Are U Gat?",
+        trait: "gat",
+        notTrait: "no gat"
+      }
+    };
+    const activeTheme = THEMES[currentGroup];
+    const activeTrait = activeTheme.trait
+    const activeNotTrait = activeTheme.notTrait
+
+    // Actualitzar el títol de la pestanya i l'H1 de la pàgina dinàmicament
+    document.title = activeTheme.title;
+    document.querySelector("h1").textContent = activeTheme.title;
+
+    // 2. DEFINIR ELS PERSONATGES DEPENENT DEL GRUP
+    const PEOPLE_GUARROAK = [
       { name: "Marc", profession: "Esquerranous", photo: "images/marc.jpg" }, // 0
       { name: "Carlota", profession: "real PD", photo: "images/carlota.jpg" },   // 1
       { name: "Valls", profession: "huevo duro", photo: "images/valls.jpg" }, // 2
@@ -831,32 +857,43 @@
       { name: "Mariona", profession: "c. teacher", photo: "images/mariona.jpg" },  // 18
       { name: "Guillem", profession: "iscalatore", photo: "images/guillem.jpg" }  // 19
     ];
-  
-    const PUZZLE_LOGIC = [
-      { criminal: true, hint: "Hi ha mateix nº de guarros a les col A i B", proof: [2] }, // 0
-      { criminal: true, hint: "IOIOIOOOOOOLDIIII", proof: [9] }, // 1
-      { criminal: true, hint: "Hi ha un nº senar de guarros sobre de #NAME:16", proof: [10] }, // 2
-      { criminal: false, hint: "Hi ha exactament 2 no guarros a la dreta de #NAME:4", proof: [7] }, // 3
-      { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
-      { criminal: true, hint: "Només 1 dels 5 guarros veïns de #NAME:9 és a la dreta de #NAME:12", proof: [9] }, // 5
-      { criminal: false, hint: "Un nº senar de no guarros a la col A són veïns de #NAME:9", proof: [3] }, // 6
-      { criminal: false, hint: "Només hi ha 1 guarro a la col D", proof: [15] }, // 7
-      { criminal: true, hint: "#NAME:1! Vaya feka ets!", proof: [18] }, // 8
-      { criminal: true, hint: "Els 2 no guarros de la col B estan connectats", proof: [17] }, // 9
-      { criminal: true, hint: "Només hi ha un no guarro a la dreta de #NAME:0", proof: [6] }, // 10
-      { criminal: false, hint: "#NAME:10 i #NAME:14 tenen 2 no guarros veïns en comú", proof: [14] }, // 11
-      { criminal: true, hint: "Un overcooked?", proof: [18] }, // 12
-      { criminal: false, hint: "Sí, jo m'apunto a un overcooked!", proof: [9] }, // 13
-      { criminal: true, hint: "#NAME:11 és un dels 3 no guarros sota de #NAME:3", proof: [5] }, // 14
-      { criminal: true, hint: "Però... #NAME:1! Vas dir que volies fer habibi!", proof: [11] }, // 15
-      { criminal: false, hint: "Cada fila té com a mínim un guarro", proof: [0] }, // 16
-      { criminal: false, hint: "Els 2 guarros sota de #NAME:1 estan connectats", proof: [] }, // 17
-      { criminal: true, hint: "Només una persona de les cantonades no té no guarros veïns", proof: [16] }, // 18
-      { criminal: false, hint: "Ehhhm... ollita?", proof: [15] } // 19
+
+    const PEOPLE_ROCO = [
+      // ATENCIÓ: Has d'omplir això amb les 20 persones del grup Roco!
+      // (He posat 20 línies de farciment perquè el joc no peti fins que ho facis)
+      ...Array(20).fill({ name: "Nom Roco", profession: "Professió", photo: "images/placeholder.jpg" })
     ];
 
+    const PEOPLE = currentGroup === 'roco' ? PEOPLE_ROCO : PEOPLE_GUARROAK;
+  
+    // 3. DEFINIR LA LÒGICA DEPENENT DEL GRUP
+    const PUZZLE_LOGIC_1 =(trait, notTrait) => [
+      { criminal: true, hint: `Hi ha mateix nº de ${trait}s a les col A i B`, proof: [2] }, // 0
+      { criminal: true, hint: currentGroup == 'guarroak' ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
+      { criminal: true, hint: `Hi ha un nº senar de ${trait} sobre de #NAME:16`, proof: [10] }, // 2
+      { criminal: false, hint: `Hi ha exactament 2 ${notTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
+      { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
+      { criminal: true, hint: `Només 1 dels 5 ${trait}s veïns de #NAME:9 és a la dreta de #NAME:12`, proof: [9] }, // 5
+      { criminal: false, hint: `Un nº senar de ${notTrait}s a la col A són veïns de #NAME:9`, proof: [3] }, // 6
+      { criminal: false, hint: `Només hi ha 1 ${trait} a la col D`, proof: [15] }, // 7
+      { criminal: true, hint: `#NAME:1! Vaya ${currentGroup == 'guarroak' ? 'feka' : 'bon escalador'} ets!`, proof: [18] }, // 8
+      { criminal: true, hint: `Els 2 ${notTrait}s de la col B estan connectats`, proof: [17] }, // 9
+      { criminal: true, hint: `Només hi ha un ${notTrait} a la dreta de #NAME:0`, proof: [6] }, // 10
+      { criminal: false, hint: `#NAME:10 i #NAME:14 tenen 2 ${notTrait}s veïns en comú`, proof: [14] }, // 11
+      { criminal: true, hint: currentGroup == 'guarroak' ? "Un overcooked?" : 'Birreta?', proof: [18] }, // 12
+      { criminal: false, hint: `Sí, jo m'apunto a un${currentGroup == 'guarroak' ? ' overcooked' : 'a birreta'}!`, proof: [9] }, // 13
+      { criminal: true, hint: `#NAME:11 és un dels 3 ${notTrait}s sota de #NAME:3`, proof: [5] }, // 14
+      { criminal: true, hint: "Però... #NAME:1! Vas dir que volies fer habibi!", proof: [11] }, // 15
+      { criminal: false, hint: `Cada fila té com a mínim un ${trait}`, proof: [0] }, // 16
+      { criminal: false, hint: `Els 2 ${trait}s sota de #NAME:1 estan connectats`, proof: [] }, // 17
+      { criminal: true, hint: `Només una persona de les cantonades no té ${notTrait}s veïns`, proof: [16] }, // 18
+      { criminal: false, hint: currentGroup == 'guarroak' ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
+    ];
+
+    const PUZZLE_LOGIC = PUZZLE_LOGIC_1;
+
     const PUZZLE = {
-      date: "2026-05-26",
+      date: "2026-05-26-" + currentGroup, // Afegim el grup a la data per no barrejar memòria cau entre els dos jocs!
       width: 4,
       height: 5,
       cards: PUZZLE_LOGIC.map((logic, index) => {
@@ -1022,7 +1059,7 @@
       return isCriminal ? "criminal" : "innocent";
     }
     function traitText(isCriminal) {
-      return isCriminal ? "guarro" : "no guarro";
+      return isCriminal ? activeTrait : activeNotTrait;
     }
 
     function isProven(index) {
@@ -1131,15 +1168,14 @@
         const innocent = document.createElement("button");
         innocent.type = "button";
         innocent.className = "innocent-btn";
-        innocent.textContent = "not guarro";
+        innocent.textContent = activeNotTrait;
         innocent.addEventListener("click", () => guess(index, false));
 
         const criminal = document.createElement("button");
         criminal.type = "button";
         criminal.className = "criminal-btn";
-        criminal.textContent = "guarro";
+        criminal.textContent = activeTrait;
         criminal.addEventListener("click", () => guess(index, true));
-        choiceActions.append(close, innocent, criminal);
       //}
 
       if (choiceDialog.showModal && !choiceDialog.open) {
@@ -1181,7 +1217,7 @@
       const solved = state.revealed.size === PUZZLE.cards.length;
       const resultLine = solved ? "Resolució: completat" : `Progrés: ${state.revealed.size}/${PUZZLE.cards.length}`;
       return [
-        "Are U a Guarro?",
+        activeTheme.title,
         resultLine,
         `Temps: ${formatTime(elapsedMs())}`,
         `Intents: ${state.attempts}`,
