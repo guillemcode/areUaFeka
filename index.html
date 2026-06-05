@@ -890,7 +890,7 @@
       { criminal: false, hint: currentGroup == 'guarroak' ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
     ];
 
-    const PUZZLE_LOGIC = PUZZLE_LOGIC_1;
+    const PUZZLE_LOGIC = PUZZLE_LOGIC_1(activeTrait, activeNotTrait);
 
     const PUZZLE = {
       date: "2026-05-26-" + currentGroup, // Afegim el grup a la data per no barrejar memòria cau entre els dos jocs!
