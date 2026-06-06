@@ -686,17 +686,12 @@
         top: 4px; 
         left: 4px; 
         z-index: 10;
-        font-size: 0.75rem; 
+        font-size: 0.6rem; 
         padding: 0; 
         background: transparent; /* Traiem la caixa negra */
         color: #111;             /* Text fosc */
-        /* Vora blanca gruixuda feta amb ombres */
-        text-shadow: 
-          -1.5px -1.5px 0 #fff,  
-           1.5px -1.5px 0 #fff,
-          -1.5px  1.5px 0 #fff,
-           1.5px  1.5px 0 #fff,
-           0px 2px 3px rgba(0,0,0,0.6);
+        /* Vora blanca gruixuda */
+        -webkit-text-stroke: 1px #fff;
       }
 
       /* Botó absolutament posicionat sobre la foto (A dalt a la dreta) */
@@ -867,7 +862,7 @@
       { name: "Alba", profession: "Koala", photo: "images/roco/alba.jpg" }, // 3
       { name: "Luis", profession: "Astronosequé", photo: "images/roco/luis.jpg" },   // 4
       { name: "Oscar", profession: "Beneditosaura", photo: "images/roco/oscar.jpg" }, // 5
-      { name: "David", profession: "Aragonés", photo: "images/roco/david.jpg" }, // 6
+      { name: "David", profession: "Doofenshmirtz", photo: "images/roco/david.jpg" }, // 6
       { name: "Laura", profession: "Punkarra", photo: "images/roco/laura.jpg" },  // 7
       { name: "Pablo", profession: "Fotos", photo: "images/roco/pablo.jpg" }, // 8
       { name: "Guillem", profession: "the OG", photo: "images/roco/gyem.jpg" },// 9
@@ -875,7 +870,7 @@
       { name: "Josep", profession: "German", photo: "images/roco/josep.jpg" },// 11
       { name: "Pau", profession: "Navalla", photo: "images/roco/pau.jpg" },  // 12
       { name: "Alex", profession: "Oti 2.0", photo: "images/roco/alex.jpg" }, // 13
-      { name: "Sebas?", profession: "", photo: "images/roco/pp.jpg" }, // 14
+      { name: "Sebi", profession: "Eusebi", photo: "images/roco/pp.jpg" }, // 14
       { name: "", profession: "", photo: "images/roco/pp.jpg" },   // 15
       { name: "", profession: "", photo: "images/roco/pp.jpg" },// 16
       { name: "", profession: "", photo: "images/roco/pp.jpg" },   // 17
@@ -889,7 +884,7 @@
     const PUZZLE_LOGIC_1 =(trait, notTrait) => [
       { criminal: true, hint: `Hi ha mateix nº de ${trait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
       { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
-      { criminal: true, hint: `Hi ha un nº senar de ${trait} sobre de #NAME:16`, proof: [10] }, // 2
+      { criminal: true, hint: `Hi ha un nº senar de ${trait}s sobre de #NAME:16`, proof: [10] }, // 2
       { criminal: false, hint: `Hi ha exactament 2 ${notTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
       { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
       { criminal: true, hint: `Només 1 dels 5 ${trait}s veïns de #NAME:9 és a la dreta de #NAME:12`, proof: [9] }, // 5
@@ -1195,6 +1190,8 @@
         criminal.className = "criminal-btn";
         criminal.textContent = activeTrait;
         criminal.addEventListener("click", () => guess(index, true));
+
+        choiceActions.append(close, innocent, criminal);
       //}
 
       if (choiceDialog.showModal && !choiceDialog.open) {
