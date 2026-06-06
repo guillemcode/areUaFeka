@@ -301,7 +301,8 @@
     .portrait img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: cover;      /* Fa que la imatge ompli tot el rectangle sense xafar-se */
+      object-position: center; /* Centra la imatge verticalment i horitzontalment */
       display: block;
     }
 
@@ -690,6 +691,7 @@
         padding: 0; 
         background: transparent; /* Traiem la caixa negra */
         color: #111;             /* Text fosc */
+        font-weight: 900;
         /* Vora blanca gruixuda */
         -webkit-text-stroke: 1px #fff;
       }
@@ -863,7 +865,7 @@
       { name: "Luis", profession: "Astronosequé", photo: "images/roco/luis.jpg" },   // 4
       { name: "Oscar", profession: "Beneditosaura", photo: "images/roco/oscar.jpg" }, // 5
       { name: "David", profession: "Doofenshmirtz", photo: "images/roco/david.jpg" }, // 6
-      { name: "Laura", profession: "Punkarra", photo: "images/roco/laura.jpg" },  // 7
+      { name: "Laura", profession: "Yeyei??", photo: "images/roco/laura.jpg" },  // 7
       { name: "Pablo", profession: "Fotos", photo: "images/roco/pablo.jpg" }, // 8
       { name: "Guillem", profession: "the OG", photo: "images/roco/gyem.jpg" },// 9
       { name: "Henar", profession: "Pollito", photo: "images/roco/henar.jpg" }, // 10
