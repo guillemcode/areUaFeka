@@ -82,6 +82,35 @@
       gap: 8px;
     }
 
+    .puzzle-selector {
+      display: flex;
+      gap: 8px;
+    }
+
+    .puzzle-btn {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      min-height: auto;
+    }
+
+    .puzzle-btn.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+    
+    @media (max-width: 680px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
     .eyebrow {
       color: var(--teal);
       font-size: 0.78rem;
@@ -740,6 +769,10 @@
       <div class="brand">
         <h1>Are U a Guarro?</h1>
       </div>
+      <div class="puzzle-selector">
+        <button class="puzzle-btn active" data-id="1">Cas 1</button>
+        <button class="puzzle-btn" data-id="2">Cas 2</button>
+      </div>
     </header>
 
     <main class="layout">
@@ -807,6 +840,32 @@
   </dialog>
 
   <script>
+    const boardEl = document.querySelector("#board");
+    const clueListEl = document.querySelector("#clue-list");
+    const selectedCopyEl = document.querySelector("#selected-copy");
+    const revealedCountEl = document.querySelector("#revealed-count");
+    const attemptCountEl = document.querySelector("#attempt-count");
+    const timerEl = document.querySelector("#timer");
+    const completeBoxEl = document.querySelector("#complete-box");
+    const restartBtn = document.querySelector("#restart-btn");
+    const shareBtn = document.querySelector("#share-btn");
+    const dialog = document.querySelector("#notice-dialog");
+    const noticeTitle = document.querySelector("#notice-title");
+    const noticeCopy = document.querySelector("#notice-copy");
+    const noticeClose = document.querySelector("#notice-close");
+    const choiceDialog = document.querySelector("#choice-dialog");
+    const choiceAvatar = document.querySelector("#choice-avatar");
+    const choiceCoord = document.querySelector("#choice-coord");
+    const choiceTitle = document.querySelector("#choice-title");
+    const choiceMeta = document.querySelector("#choice-meta");
+    const choiceClue = document.querySelector("#choice-clue");
+    const choiceActions = document.querySelector("#choice-actions");
+
+    const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
+    const TAGS = ["", "amber", "blue", "pink", "green"];
+    const AVATARS = ["#e3c36f", "#88b6bd", "#d58d78", "#9ebf87", "#c6a5c8", "#e1a85c", "#8fa9d8", "#c6b88e"];
+
+
     // 1. LLEGIR LA URL I CONFIGURAR EL TEMA
     const urlParams = new URLSearchParams(window.location.search);
     const currentGroup = urlParams.get('group') === 'roco' ? 'roco' : 'guarroak';
@@ -859,7 +918,7 @@
 
     const PEOPLE_ROCO = [
       { name: "Roger", profession: "Dyno boy", photo: "images/roco/roger.jpg" }, // 0
-      { name: "Joan", profession: "Johan", photo: "images/roco/joan.jpg" },   // 1
+      { name: "Joan", profession: "Sebastian", photo: "images/roco/joan.jpg" },   // 1
       { name: "Cris", profession: "Aguilera", photo: "images/roco/cris.jpg" }, // 2
       { name: "Alba", profession: "Koala", photo: "images/roco/alba.jpg" }, // 3
       { name: "Luis", profession: "Astronosequé", photo: "images/roco/luis.jpg" },   // 4
@@ -872,17 +931,23 @@
       { name: "Josep", profession: "German", photo: "images/roco/josep.jpg" },// 11
       { name: "Pau", profession: "Navalla", photo: "images/roco/pau.jpg" },  // 12
       { name: "Alex", profession: "Oti 2.0", photo: "images/roco/alex.jpg" }, // 13
-      { name: "Sebi", profession: "Eusebi", photo: "images/roco/sebi.jpg" }, // 14
-      { name: "??1", profession: "", photo: "images/roco/pp.jpg" },   // 15
-      { name: "??2", profession: "", photo: "images/roco/pp.jpg" },// 16
-      { name: "??3", profession: "", photo: "images/roco/pp.jpg" },   // 17
+      { name: "Sebi", profession: "Eu, sebi", photo: "images/roco/sebi.jpg" }, // 14
+      { name: "Sara", profession: "Choni", photo: "images/roco/sara.jpg" },   // 15
+      { name: "Èlia", profession: "Gimnasta", photo: "images/roco/elia.jpg" },// 16
+      { name: "Jan", profession: "RRPP", photo: "images/roco/jan.jpg" },   // 17
       { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/roco/jordi.jpg" },  // 18
       { name: "Guillem", profession: "Oscar", photo: "images/roco/guillem.jpg" }  // 19
     ];
 
     const PEOPLE = currentGroup === 'roco' ? PEOPLE_ROCO : PEOPLE_GUARROAK;
+
+    const ORDERS = {
+      1: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+      2: [13, 7, 4, 1, 18, 5, 9, 2, 8, 19, 11, 0, 12, 14, 6, 15, 17, 3, 10, 16] // <-- Ordre aleatori d'exemple
+    };
   
     // 3. DEFINIR LA LÒGICA DEPENENT DEL GRUP
+    // 11/5
     const PUZZLE_LOGIC_1 =(trait, notTrait) => [
       { criminal: true, hint: `Hi ha mateix nº de ${trait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
       { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
@@ -906,55 +971,93 @@
       { criminal: false, hint: !isRoco ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
     ];
 
+    // 11/5
+    const PUZZLE_LOGIC_2 = (trait, notTrait) => [
+      { criminal: false, hint: "Sembla que intenten aixecar el camió de gelats fent servir imants?", proof: [0] },          // 0
+      { criminal: false, hint: `Exactament 1 ${trait} a la col B és veí de #NAME:6`, proof: [15,19] }, 
+      { criminal: false, hint: `Només 1 dels 3 ${trait}s a la col C és veí de #NAME:6`, proof: [] }, 
+      { criminal: false, hint: "Eh? Això és un helicòpter?", proof: [6, 18] }, 
+      { criminal: false, hint: `Només un ${notTrait} a la col B té un ${notTrait} just a sobre`, proof: [13] },              // 4
+      { criminal: false, hint: "Això és... un grapat d'imants de nevera penjant-ne?", proof: [4] },
+      { criminal: false, hint: `#NAME:15 és un dels 2 ${trait}s entre #NAME:3 i #NAME:19`, proof: [10] }, 
+      { criminal: false, hint: "Ei! Què és aquest soroll?", proof: [6, 18] }, 
+      { criminal: true, hint: "No funciona! Necessitem una cosa més forta... Demà!", proof: [0] }, 
+      { criminal: true, hint: `Exactament 4 ${notTrait}s a la fila 1 tenen un ${notTrait} just a sota`, proof: [4] },       // 9 
+      { criminal: true, hint: `Exactament 1 ${notTrait} a la col C està entre #NAME:4, #NAME:5 i #NAME:6`, proof: [2] }, 
+      { criminal: true, hint: `Hi ha exactament 2 ${notTrait}s a l'esquerra de #NAME:19`, proof: [6, 18] }, 
+      { criminal: true, hint: "Oh, no! Ens han vist! Ràpid! Baixeu el ganxo!", proof: [19] }, 
+      { criminal: true, hint: `Només un ${notTrait} a la col A té un ${notTrait} just a sota`, proof: [1] }, 
+      { criminal: true, hint: `Hi ha exactament 2 ${notTrait}s a la fila 5`, proof: [10] },                                 // 14
+      { criminal: true, hint: `Cada columna té com a mínim 2 ${trait}s`, proof: [6] }, 
+      { criminal: false, hint: "Hi ha una cosa penjant de l'helicòpter...", proof: [14, 18] }, 
+      { criminal: false, hint: "S'adreça cap al camió de gelats!", proof: [14, 18] }, 
+      { criminal: true, hint: `E${isRoco ? '' : 'l'}s 2 ${notTrait}s sobre de #NAME:19 estan connectats`, proof: [10] }, 
+      { criminal: true, hint: `#NAME:12 és un dels 6 ${trait}s a ${isRoco ? 's' : 'l'}es vores`, proof: [11, 14] }               // 19
+    ];
+
+    // VARIABLES GLOBALS DINÀMIQUES
+    let currentPuzzleId = localStorage.getItem('aruafeka-puzzle') || '1';
+    let PUZZLE = {};
+    let STORAGE_KEY = '';
+    let initialReveal = [];
+    let state = {};
+
     const PUZZLE_LOGIC = PUZZLE_LOGIC_1(activeTrait, activeNotTrait);
 
-    const PUZZLE = {
-      date: "2026-05-26-" + currentGroup, // Afegim el grup a la data per no barrejar memòria cau entre els dos jocs!
-      width: 4,
-      height: 5,
-      cards: PUZZLE_LOGIC.map((logic, index) => {
-        return {
-          name: PEOPLE[index].name,
-          profession: PEOPLE[index].profession,
-          photo: PEOPLE[index].photo,
-          criminal: logic.criminal,
-          hint: logic.hint,
-          proof: logic.proof
-        };
-      }),
-      hints: []
-    };
+    function buildPuzzle(id) {
+      currentPuzzleId = id;
+      localStorage.setItem('aruafeka-puzzle', id);
+      
+      const logicArray = PUZZLE_LOGICS[id];
+      const orderArray = ORDERS[id];
 
-    const STORAGE_KEY = `aruafeka-local-${PUZZLE.date}`;
-    const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
-    const TAGS = ["", "amber", "blue", "pink", "green"];
-    const AVATARS = ["#e3c36f", "#88b6bd", "#d58d78", "#9ebf87", "#c6a5c8", "#e1a85c", "#8fa9d8", "#c6b88e"];
+      PUZZLE = {
+        date: "2026-05-26-" + currentGroup + "-p" + id,
+        width: 4,
+        height: 5,
+        cards: logicArray.map((logic, index) => {
+          // Busquem qui seu en aquesta casella segons la permutació
+          const personIndex = orderArray[index];
+          const person = PEOPLE[personIndex];
+          
+          return {
+            name: person.name,
+            profession: person.profession,
+            photo: person.photo,
+            criminal: logic.criminal,
+            hint: logic.hint,
+            proof: logic.proof
+          };
+        }),
+        hints: []
+      };
 
-    const boardEl = document.querySelector("#board");
-    const clueListEl = document.querySelector("#clue-list");
-    const selectedCopyEl = document.querySelector("#selected-copy");
-    const revealedCountEl = document.querySelector("#revealed-count");
-    const attemptCountEl = document.querySelector("#attempt-count");
-    const timerEl = document.querySelector("#timer");
-    const completeBoxEl = document.querySelector("#complete-box");
-    const restartBtn = document.querySelector("#restart-btn");
-    const shareBtn = document.querySelector("#share-btn");
-    const dialog = document.querySelector("#notice-dialog");
-    const noticeTitle = document.querySelector("#notice-title");
-    const noticeCopy = document.querySelector("#notice-copy");
-    const noticeClose = document.querySelector("#notice-close");
-    const choiceDialog = document.querySelector("#choice-dialog");
-    const choiceAvatar = document.querySelector("#choice-avatar");
-    const choiceCoord = document.querySelector("#choice-coord");
-    const choiceTitle = document.querySelector("#choice-title");
-    const choiceMeta = document.querySelector("#choice-meta");
-    const choiceClue = document.querySelector("#choice-clue");
-    const choiceActions = document.querySelector("#choice-actions");
+      STORAGE_KEY = `aruafeka-local-${PUZZLE.date}`;
+      const foundIndex = PUZZLE.cards.findIndex(card => card.proof && card.proof.length === 0);
+      initialReveal = foundIndex !== -1 ? [foundIndex] : [4];
+    }
 
-    const foundIndex = PUZZLE.cards.findIndex(card => card.proof && card.proof.length === 0);
-    const initialReveal = foundIndex !== -1 ? [foundIndex] : [4];
+    // FUNCIÓ PER CANVIAR DE PUZLE DES DELS BOTONS
+    function switchPuzzle(id) {
+      if (currentPuzzleId === id) return; // Ja estem en aquest puzle
+      
+      buildPuzzle(id);
+      Object.assign(state, loadState()); // Carreguem l'estat d'aquell puzle específic (desat a localStorage)
+      
+      // Buidem la interfície visual perquè es tornin a pintar les fotos i les cares noves
+      boardEl.innerHTML = "";
+      
+      // Actualitzem l'estil dels botons superiors
+      document.querySelectorAll('.puzzle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.id === id);
+      });
+      
+      render();
+    }
 
-    const state = loadState();
+    // Inicialitzem el joc!
+    buildPuzzle(currentPuzzleId);
+    state = loadState();
 
     function freshState() {
       return {
@@ -1405,6 +1508,9 @@
     restartBtn.addEventListener("click", restart);
     shareBtn.addEventListener("click", copyShare);
     noticeClose.addEventListener("click", () => dialog.close());
+    document.querySelectorAll('.puzzle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => switchPuzzle(e.target.dataset.id));
+    });
     setInterval(() => {
       renderStats();
       if (!state.completeTime) saveState();
