@@ -575,6 +575,32 @@
       color: #245d44;
     }
 
+    .history-box {
+      display: none;
+      border: 1px solid var(--line);
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .history-box.visible {
+      display: grid;
+      gap: 6px;
+    }
+
+    .history-item {
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 5px;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
     dialog {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -787,8 +813,7 @@
             <strong id="revealed-count">0/20</strong>
           </div>
           <div class="stat">
-            <span>Intents</span>
-            <strong id="attempt-count">0</strong>
+            <span>Errades</span> <strong id="attempt-count">0</strong>
           </div>
           <div class="stat">
             <span>Temps</span>
@@ -799,7 +824,6 @@
         <div class="sidebar-actions" aria-live="polite">
           <p id="selected-copy" class="selected-copy"></p>
           <div class="tool-row side-tools">
-            <!-- <button id="hint-btn" type="button">Pista</button> -->
             <button id="restart-btn" type="button">Reinicia</button>
             <button id="share-btn" type="button">Copia resultat</button>
           </div>
@@ -807,6 +831,7 @@
 
         <div id="hint-box" class="hint-box"></div>
         <div id="complete-box" class="complete-box"></div>
+        <div id="history-box" class="history-box"></div>
 
         <h2 class="section-title">Pistes revelades</h2>
         <div id="clue-list" class="clue-list"></div>
@@ -847,6 +872,7 @@
     const attemptCountEl = document.querySelector("#attempt-count");
     const timerEl = document.querySelector("#timer");
     const completeBoxEl = document.querySelector("#complete-box");
+    const historyBoxEl = document.querySelector("#history-box");
     const restartBtn = document.querySelector("#restart-btn");
     const shareBtn = document.querySelector("#share-btn");
     const dialog = document.querySelector("#notice-dialog");
@@ -926,7 +952,7 @@
       { name: "David", profession: "Doofenshmirtz", photo: "images/roco/david.jpg" }, // 6
       { name: "Laura", profession: "Yeyei??", photo: "images/roco/laura.jpg" },  // 7
       { name: "Pablo", profession: "Fotos", photo: "images/roco/pablo.jpg" }, // 8
-      { name: "Guillem", profession: "the OG", photo: "images/roco/gyem.jpg" },// 9
+      { name: "Gyem", profession: "the OG", photo: "images/roco/gyem.jpg" },// 9
       { name: "Henar", profession: "Pollito", photo: "images/roco/henar.jpg" }, // 10
       { name: "Josep", profession: "German", photo: "images/roco/josep.jpg" },// 11
       { name: "Pau", profession: "Navalla", photo: "images/roco/pau.jpg" },  // 12
@@ -1068,12 +1094,10 @@
         selected: null,
         consumed: new Set(),
         tags: {},
-        attempts: 0,
+        errors: 0, // Canviat d'attempts a errors
         imperfections: [],
         revealLog: [...initialReveal],
-        hint: null,
-        hintStage: 0,
-        pendingHintType: null,
+        history: [], // Nou array per guardar partides passades
         elapsedBase: 0,
         startedAt: Date.now(),
         completeTime: 0
@@ -1091,6 +1115,8 @@
           revealed: new Set(saved.revealed || initialReveal),
           consumed: new Set(saved.consumed || []),
           tags: saved.tags || {},
+          errors: saved.errors || 0,
+          history: saved.history || [],
           imperfections: saved.imperfections || [],
           revealLog: saved.revealLog || [...(saved.revealed || initialReveal)],
           startedAt: Date.now(),
@@ -1229,6 +1255,7 @@
       closeChoiceDialog();
 
       if (!validGuess(index, isCriminal)) {
+        state.errors += 1;
         const already = state.imperfections.some(item => item.index === index && item.type === "error");
         if (!already) state.imperfections.push({ index, type: "error" });
         const requested = traitText(isCriminal);
@@ -1315,10 +1342,41 @@
     }
 
     function restart() {
-      if (!confirm("Reiniciar el puzzle i esborrar el progrés local?")) return;
+      // Si justs han començat i no han fet errors, no cal guardar res
+      if (state.revealed.size <= 1 && state.errors === 0) {
+        if (!confirm("Vols reiniciar el tauler?")) return;
+        const next = freshState();
+        next.history = state.history; // Conservem l'historial anterior
+        Object.assign(state, next);
+        saveState();
+        render();
+        return;
+      }
+
+      if (!confirm("Vols arxivar aquesta partida i tornar a començar? Quedarà guardada a l'historial!")) return;
+
+      const isComplete = state.revealed.size === PUZZLE.cards.length;
+      const timeStr = formatTime(elapsedMs());
+      const errCount = state.errors;
+      const revCount = state.revealed.size;
+      
+      let summary = "";
+      if (isComplete) {
+        summary = `Acabada - Errades: ${errCount} - Temps: ${timeStr}`;
+      } else {
+        summary = `Inacabada (${revCount}/${PUZZLE.cards.length}) - Errades: ${errCount} - Temps: ${timeStr}`;
+      }
+
+      // Guardem la partida actual a l'historial
+      const currentHistory = state.history || [];
+      currentHistory.push(summary);
+
+      // Creem un nou estat però li passem l'historial intacte
       const next = freshState();
+      next.history = currentHistory;
+      
       Object.assign(state, next);
-      localStorage.removeItem(STORAGE_KEY);
+      saveState();
       render();
     }
 
@@ -1472,7 +1530,7 @@
 
     function renderStats() {
       revealedCountEl.textContent = `${state.revealed.size}/${PUZZLE.cards.length}`;
-      attemptCountEl.textContent = String(state.attempts);
+      attemptCountEl.textContent = String(state.errors);
       timerEl.textContent = formatTime(elapsedMs());
     }
 
@@ -1506,6 +1564,20 @@
         return;
       }
       completeBoxEl.innerHTML = `<strong>Cas tancat.</strong><span>${formatTime(elapsedMs())} · ${state.attempts} intents</span>`;
+    }
+
+    function renderHistory() {
+      if (!historyBoxEl) return;
+      const hasHistory = state.history && state.history.length > 0;
+      historyBoxEl.classList.toggle("visible", hasHistory);
+      
+      if (!hasHistory) {
+        historyBoxEl.innerHTML = "";
+        return;
+      }
+      
+      historyBoxEl.innerHTML = `<strong>Historial del Cas:</strong>` + 
+        state.history.map((h, i) => `<div class="history-item">Int. ${i+1} | ${h}</div>`).join("");
     }
 
     restartBtn.addEventListener("click", restart);
