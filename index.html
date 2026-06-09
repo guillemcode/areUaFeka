@@ -1002,7 +1002,10 @@
     let initialReveal = [];
     let state = {};
 
-    const PUZZLE_LOGIC = PUZZLE_LOGIC_1(activeTrait, activeNotTrait);
+    const PUZZLE_LOGICS = {
+      1: PUZZLE_LOGIC_1(activeTrait, activeNotTrait),
+      2: PUZZLE_LOGIC_2(activeTrait, activeNotTrait)
+    };
 
     function buildPuzzle(id) {
       currentPuzzleId = id;
