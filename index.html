@@ -770,7 +770,7 @@
         <h1>Are U a Guarro?</h1>
       </div>
       <div class="puzzle-selector">
-        <button class="puzzle-btn active" data-id="1">Cas 1</button>
+        <button class="puzzle-btn" data-id="1">Cas 1</button>
         <button class="puzzle-btn" data-id="2">Cas 2</button>
       </div>
     </header>
@@ -973,7 +973,7 @@
 
     // 11/5
     const PUZZLE_LOGIC_2 = (trait, notTrait) => [
-      { criminal: false, hint: "Sembla que intenten aixecar el camió de gelats fent servir imants?", proof: [0] },          // 0
+      { criminal: false, hint: "Sembla que intenten aixecar el camió de gelats fent servir imants?", proof: [9] },          // 0
       { criminal: false, hint: `Exactament 1 ${trait} a la col B és veí de #NAME:6`, proof: [15,19] }, 
       { criminal: false, hint: `Només 1 dels 3 ${trait}s a la col C és veí de #NAME:6`, proof: [] }, 
       { criminal: false, hint: "Eh? Això és un helicòpter?", proof: [6, 18] }, 
@@ -981,7 +981,7 @@
       { criminal: false, hint: "Això és... un grapat d'imants de nevera penjant-ne?", proof: [4] },
       { criminal: false, hint: `#NAME:15 és un dels 2 ${trait}s entre #NAME:3 i #NAME:19`, proof: [10] }, 
       { criminal: false, hint: "Ei! Què és aquest soroll?", proof: [6, 18] }, 
-      { criminal: true, hint: "No funciona! Necessitem una cosa més forta... Demà!", proof: [0] }, 
+      { criminal: true, hint: "No funciona! Necessitem una cosa més forta... Demà!", proof: [9] }, 
       { criminal: true, hint: `Exactament 4 ${notTrait}s a la fila 1 tenen un ${notTrait} just a sota`, proof: [4] },       // 9 
       { criminal: true, hint: `Exactament 1 ${notTrait} a la col C està entre #NAME:4, #NAME:5 i #NAME:6`, proof: [2] }, 
       { criminal: true, hint: `Hi ha exactament 2 ${notTrait}s a l'esquerra de #NAME:19`, proof: [6, 18] }, 
@@ -1518,6 +1518,10 @@
       renderStats();
       if (!state.completeTime) saveState();
     }, 1000);
+
+    document.querySelectorAll('.puzzle-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.id === currentPuzzleId);
+    });
 
     render();
   </script>
