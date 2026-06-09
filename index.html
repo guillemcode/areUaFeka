@@ -906,6 +906,11 @@
         title: "Are U Gat?",
         trait: "gat",
         notTrait: "no gat"
+      },
+      wiris: {
+        title: "Are U a ",
+        trait: "",
+        notTrait: "no "
       }
     };
     const activeTheme = THEMES[currentGroup];
@@ -913,6 +918,7 @@
     const activeNotTrait = activeTheme.notTrait;
     const isGuarroak = currentGroup == 'guarroak';
     const isRoco = currentGroup == 'roco';
+    const isWiris = currentGroup == 'wiris';
 
     // Actualitzar el títol de la pestanya i l'H1 de la pàgina dinàmicament
     document.title = activeTheme.title;
@@ -962,6 +968,29 @@
       { name: "Èlia", profession: "Gimnasta", photo: "images/roco/elia.jpg" },// 16
       { name: "Jan", profession: "RRPP", photo: "images/roco/jan.jpg" },   // 17
       { name: "Jordi Bosch", profession: "IOOOLDIIII", photo: "images/roco/jordi.jpg" },  // 18
+      { name: "Guillem", profession: "Oscar", photo: "images/roco/guillem.jpg" }  // 19
+    ];
+
+    const PEOPLE_WIRIS = [
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 0
+      { name: "Carlota", profession: "real PD", photo: "images/guarroak/carlota.jpg" },   // 1
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 2
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 3
+      { name: "", profession: "", photo: "images/roco/.jpg" },   // 4
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 5
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 6
+      { name: "", profession: "", photo: "images/roco/.jpg" },  // 7
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 8
+      { name: "", profession: "", photo: "images/roco/.jpg" },// 9
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 10
+      { name: "", profession: "", photo: "images/roco/.jpg" },// 11
+      { name: "", profession: "", photo: "images/roco/.jpg" },  // 12
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 13
+      { name: "", profession: "", photo: "images/roco/.jpg" }, // 14
+      { name: "", profession: "", photo: "images/roco/.jpg" },   // 15
+      { name: "", profession: "", photo: "images/roco/.jpg" },// 16
+      { name: "", profession: "", photo: "images/roco/.jpg" },   // 17
+      { name: "", profession: "", photo: "images/roco/.jpg" },  // 18
       { name: "Guillem", profession: "Oscar", photo: "images/roco/guillem.jpg" }  // 19
     ];
 
@@ -1445,6 +1474,7 @@
       renderStats();
       renderClues();
       renderComplete();
+      renderHistory();
     }
 
     function renderBoard() {
