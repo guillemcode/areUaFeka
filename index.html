@@ -795,10 +795,7 @@
       <div class="brand">
         <h1>Are U a Guarro?</h1>
       </div>
-      <div class="puzzle-selector">
-        <button class="puzzle-btn" data-id="1">Cas 1</button>
-        <button class="puzzle-btn" data-id="2">Cas 2</button>
-      </div>
+      <div id="puzzle-selector" class="puzzle-selector"></div>
     </header>
 
     <main class="layout">
@@ -866,6 +863,7 @@
 
   <script>
     const boardEl = document.querySelector("#board");
+    const puzzleSelectorEl = document.querySelector("#puzzle-selector");
     const clueListEl = document.querySelector("#clue-list");
     const selectedCopyEl = document.querySelector("#selected-copy");
     const revealedCountEl = document.querySelector("#revealed-count");
@@ -972,82 +970,112 @@
     ];
 
     const PEOPLE_WIRIS = [
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 0
-      { name: "Carlota", profession: "real PD", photo: "images/guarroak/carlota.jpg" },   // 1
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 2
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 3
-      { name: "", profession: "", photo: "images/roco/.jpg" },   // 4
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 5
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 6
-      { name: "", profession: "", photo: "images/roco/.jpg" },  // 7
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 8
-      { name: "", profession: "", photo: "images/roco/.jpg" },// 9
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 10
-      { name: "", profession: "", photo: "images/roco/.jpg" },// 11
-      { name: "", profession: "", photo: "images/roco/.jpg" },  // 12
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 13
-      { name: "", profession: "", photo: "images/roco/.jpg" }, // 14
-      { name: "", profession: "", photo: "images/roco/.jpg" },   // 15
-      { name: "", profession: "", photo: "images/roco/.jpg" },// 16
-      { name: "", profession: "", photo: "images/roco/.jpg" },   // 17
-      { name: "", profession: "", photo: "images/roco/.jpg" },  // 18
-      { name: "Guillem", profession: "Oscar", photo: "images/roco/guillem.jpg" }  // 19
+      { name: "Victor", profession: "compostela", photo: "images/roco/.jpg" }, // 0
+      { name: "Carlota", profession: "hefa", photo: "images/guarroak/carlota.jpg" },   // 1
+      { name: "Vilaseca", profession: "Moianí", photo: "images/roco/.jpg" }, // 2
+      { name: "Ripoll", profession: "XDos", photo: "images/roco/.jpg" }, // 3
+      { name: "Aina", profession: "palacetes", photo: "images/roco/.jpg" },   // 4
+      { name: "Ros", profession: "XU - lo", photo: "images/roco/.jpg" }, // 5
+      { name: "Noelia", profession: "", photo: "images/roco/.jpg" }, // 6
+      { name: "Ubaldo", profession: "el camisas", photo: "images/roco/.jpg" },  // 7
+      { name: "David", profession: "festis", photo: "images/roco/.jpg" }, // 8
+      { name: "Clara", profession: "Hanabi?", photo: "images/roco/.jpg" },// 9
+      { name: "Andrea", profession: "lucky", photo: "images/roco/.jpg" }, // 10
+      { name: "Manu", profession: "", photo: "images/roco/.jpg" },// 11
+      { name: "Massó", profession: "typescript", photo: "images/roco/.jpg" },  // 12
+      { name: "Marc", profession: "tu que fas?", photo: "images/roco/.jpg" }, // 13
+      { name: "Aida", profession: "", photo: "images/roco/.jpg" }, // 14
+      { name: "Ivan", profession: "organitzador", photo: "images/roco/.jpg" },   // 15
+      { name: "Carla", profession: "", photo: "images/roco/.jpg" },// 16
+      { name: "Caro", profession: "", photo: "images/roco/.jpg" },   // 17
+      { name: "Andreu", profession: "prens", photo: "images/roco/.jpg" },  // 18
+      { name: "Coderch", profession: "enigma?", photo: "images/roco/guillem.jpg" }  // 19
     ];
 
-    const PEOPLE = currentGroup === 'roco' ? PEOPLE_ROCO : PEOPLE_GUARROAK;
+    const PEOPLE = currentGroup === 'roco'
+                    ? PEOPLE_ROCO
+                    : currentGroup === 'wiris'
+                      ? PEOPLE_WIRIS
+                      : PEOPLE_GUARROAK;
 
     const ORDERS = {
       1: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-      2: [13, 7, 4, 1, 18, 5, 9, 2, 8, 19, 11, 0, 12, 14, 6, 15, 17, 3, 10, 16] // <-- Ordre aleatori d'exemple
+      2: [13, 7, 4, 1, 18, 5, 9, 2, 8, 19, 11, 0, 12, 14, 6, 15, 17, 3, 10, 16],
+      3: [0, 12, 14, 4, 1, 18, 5, 9, 2, 8, 19, 11, 6, 15, 17, 3, 10, 16, 13, 7],
     };
   
     // 3. DEFINIR LA LÒGICA DEPENENT DEL GRUP
     // 11/5
-    const PUZZLE_LOGIC_1 =(trait, notTrait) => [
-      { criminal: true, hint: `Hi ha mateix nº de ${trait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
+    const PUZZLE_LOGIC_1 =() => [
+      { criminal: true, hint: `Hi ha mateix nº de ${activeTrait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
       { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
-      { criminal: true, hint: `Hi ha un nº senar de ${trait}s sobre de #NAME:16`, proof: [10] }, // 2
-      { criminal: false, hint: `Hi ha exactament 2 ${notTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
+      { criminal: true, hint: `Hi ha un nº senar de ${activeTrait}s sobre de #NAME:16`, proof: [10] }, // 2
+      { criminal: false, hint: `Hi ha exactament 2 ${activeNotTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
       { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
-      { criminal: true, hint: `Només 1 dels 5 ${trait}s veïns de #NAME:9 és a la dreta de #NAME:12`, proof: [9] }, // 5
-      { criminal: false, hint: `Un nº senar de ${notTrait}s a la col A són veïns de #NAME:9`, proof: [3] }, // 6
-      { criminal: false, hint: `Només hi ha 1 ${trait} a la col D`, proof: [15] }, // 7
+      { criminal: true, hint: `Només 1 dels 5 ${activeTrait}s veïns de #NAME:9 és a la dreta de #NAME:12`, proof: [9] }, // 5
+      { criminal: false, hint: `Un nº senar de ${activeNotTrait}s a la col A són veïns de #NAME:9`, proof: [3] }, // 6
+      { criminal: false, hint: `Només hi ha 1 ${activeTrait} a la col D`, proof: [15] }, // 7
       { criminal: true, hint: `#NAME:1! Vaya ${!isRoco ? 'feka' : 'bon escalador'} ets!`, proof: [18] }, // 8
-      { criminal: true, hint: `E${isRoco ? '': 'l'}s 2 ${notTrait}s de la col B estan connectats`, proof: [17] }, // 9
-      { criminal: true, hint: `Només hi ha un ${notTrait} a la dreta de #NAME:0`, proof: [6] }, // 10
-      { criminal: false, hint: `#NAME:10 i #NAME:14 tenen 2 ${notTrait}s veïns en comú`, proof: [14] }, // 11
+      { criminal: true, hint: `E${isRoco ? '': 'l'}s 2 ${activeNotTrait}s de la col B estan connectats`, proof: [17] }, // 9
+      { criminal: true, hint: `Només hi ha un ${activeNotTrait} a la dreta de #NAME:0`, proof: [6] }, // 10
+      { criminal: false, hint: `#NAME:10 i #NAME:14 tenen 2 ${activeNotTrait}s veïns en comú`, proof: [14] }, // 11
       { criminal: true, hint: !isRoco ? "Un overcooked?" : 'Birreta?', proof: [18] }, // 12
       { criminal: false, hint: `Sí, jo m'apunto a un${!isRoco ? ' overcooked' : 'a birreta'}!`, proof: [9] }, // 13
-      { criminal: true, hint: `#NAME:11 és un dels 3 ${notTrait}s sota de #NAME:3`, proof: [5] }, // 14
+      { criminal: true, hint: `#NAME:11 és un dels 3 ${activeNotTrait}s sota de #NAME:3`, proof: [5] }, // 14
       { criminal: true, hint: `Però... #NAME:1! Vas dir que volies fer ${isRoco ? 'birreta' : 'habibi'}!`, proof: [11] }, // 15
-      { criminal: false, hint: `Cada fila té com a mínim un ${trait}`, proof: [0] }, // 16
-      { criminal: false, hint: `E${isRoco ? '' : 'l'}s 2 ${trait}s sota de #NAME:1 estan connectats`, proof: [] }, // 17
-      { criminal: true, hint: `Només una persona de ${isRoco ? 's' : 'l'}es cantonades no té ${notTrait}s veïns`, proof: [16] }, // 18
+      { criminal: false, hint: `Cada fila té com a mínim un ${activeTrait}`, proof: [0] }, // 16
+      { criminal: false, hint: `E${isRoco ? '' : 'l'}s 2 ${activeTrait}s sota de #NAME:1 estan connectats`, proof: [] }, // 17
+      { criminal: true, hint: `Només una persona de ${isRoco ? 's' : 'l'}es cantonades no té ${activeNotTrait}s veïns`, proof: [16] }, // 18
       { criminal: false, hint: !isRoco ? "Ehhhm... ollita?" : "Nem a nes t Sancho?", proof: [15] } // 19
     ];
 
     // 11/5
-    const PUZZLE_LOGIC_2 = (trait, notTrait) => [
+    const PUZZLE_LOGIC_2 = () => [
       { criminal: false, hint: "Sembla que intenten aixecar el camió de gelats fent servir imants?", proof: [9] },          // 0
-      { criminal: false, hint: `Exactament 1 ${trait} a la col B és veí de #NAME:6`, proof: [15,19] }, 
-      { criminal: false, hint: `Només 1 dels 3 ${trait}s a la col C és veí de #NAME:6`, proof: [] }, 
+      { criminal: false, hint: `Exactament 1 ${activeTrait} a la col B és veí de #NAME:6`, proof: [15,19] }, 
+      { criminal: false, hint: `Només 1 dels 3 ${activeTrait}s a la col C és veí de #NAME:6`, proof: [] }, 
       { criminal: false, hint: "Eh? Això és un helicòpter?", proof: [6, 18] }, 
-      { criminal: false, hint: `Només un ${notTrait} a la col B té un ${notTrait} just a sobre`, proof: [13] },              // 4
+      { criminal: false, hint: `Només un ${activeNotTrait} a la col B té un ${activeNotTrait} just a sobre`, proof: [13] },              // 4
       { criminal: false, hint: "Això és... un grapat d'imants de nevera penjant-ne?", proof: [4] },
-      { criminal: false, hint: `#NAME:15 és un dels 2 ${trait}s entre #NAME:3 i #NAME:19`, proof: [10] }, 
+      { criminal: false, hint: `#NAME:15 és un dels 2 ${activeTrait}s entre #NAME:3 i #NAME:19`, proof: [10] }, 
       { criminal: false, hint: "Ei! Què és aquest soroll?", proof: [6, 18] }, 
       { criminal: true, hint: "No funciona! Necessitem una cosa més forta... Demà!", proof: [9] }, 
-      { criminal: true, hint: `Exactament 4 ${notTrait}s a la fila 1 tenen un ${notTrait} just a sota`, proof: [4] },       // 9 
-      { criminal: true, hint: `Exactament 1 ${notTrait} a la col C està entre #NAME:4, #NAME:5 i #NAME:6`, proof: [2] }, 
-      { criminal: true, hint: `Hi ha exactament 2 ${notTrait}s a l'esquerra de #NAME:19`, proof: [6, 18] }, 
+      { criminal: true, hint: `Exactament 4 ${activeNotTrait}s a la fila 1 tenen un ${activeNotTrait} just a sota`, proof: [4] },       // 9 
+      { criminal: true, hint: `Exactament 1 ${activeNotTrait} a la col C està entre #NAME:4, #NAME:5 i #NAME:6`, proof: [2] }, 
+      { criminal: true, hint: `Hi ha exactament 2 ${activeNotTrait}s a l'esquerra de #NAME:19`, proof: [6, 18] }, 
       { criminal: true, hint: "Oh, no! Ens han vist! Ràpid! Baixeu el ganxo!", proof: [19] }, 
-      { criminal: true, hint: `Només un ${notTrait} a la col A té un ${notTrait} just a sota`, proof: [1] }, 
-      { criminal: true, hint: `Hi ha exactament 2 ${notTrait}s a la fila 5`, proof: [10] },                                 // 14
-      { criminal: true, hint: `Cada columna té com a mínim 2 ${trait}s`, proof: [6] }, 
+      { criminal: true, hint: `Només un ${activeNotTrait} a la col A té un ${activeNotTrait} just a sota`, proof: [1] }, 
+      { criminal: true, hint: `Hi ha exactament 2 ${activeNotTrait}s a la fila 5`, proof: [10] },                                 // 14
+      { criminal: true, hint: `Cada columna té com a mínim 2 ${activeTrait}s`, proof: [6] }, 
       { criminal: false, hint: "Hi ha una cosa penjant de l'helicòpter...", proof: [14, 18] }, 
       { criminal: false, hint: "S'adreça cap al camió de gelats!", proof: [14, 18] }, 
-      { criminal: true, hint: `E${isRoco ? '' : 'l'}s 2 ${notTrait}s sobre de #NAME:19 estan connectats`, proof: [10] }, 
-      { criminal: true, hint: `#NAME:12 és un dels 6 ${trait}s a ${isRoco ? 's' : 'l'}es vores`, proof: [11, 14] }               // 19
+      { criminal: true, hint: `E${isRoco ? '' : 'l'}s 2 ${activeNotTrait}s sobre de #NAME:19 estan connectats`, proof: [10] }, 
+      { criminal: true, hint: `#NAME:12 és un dels 6 ${activeTrait}s a ${isRoco ? 's' : 'l'}es vores`, proof: [11, 14] }               // 19
+    ];
+
+    // 20/5
+
+    const PUZZLE_LOGIC_3 = () => [
+      { criminal: false, hint: `Cada columna té com a mínim un ${activeTrait}`, proof: [12] },	// 0
+      { criminal: false, hint: "A mi m'agrada més el waka waka...", proof: [0] },	// 1
+      { criminal: false, hint: `Sembla que el meu ${isRoco ? 'magnesi' : 'ordinador'} ha desaparegut...`, proof: [8] },	// 2
+      { criminal: false, hint: `2 persones a ${isRoco ? 's' : 'l'}es cantonades tenen un ${activeNotTrait} just a sota`, proof: [8] },	// 3
+      { criminal: false, hint: `Només hi ha un ${activeTrait} a la dreta de #NAME:12`, proof: [3] },	// 4
+      { criminal: true, hint: "El nostre pla de l'imant va fallar ahir...", proof: [0] },	// 5
+      { criminal: true, hint: `... però demà us enxamparem, ${activeTrait}s!`, proof: [0] },	// 6
+      { criminal: false, hint: "Els meus ventiladors també han desaparegut! Tots dos!", proof: [17] },	// 7
+      { criminal: false, hint: `Cada columna té com a mínim 3 ${activeNotTrait}s`, proof: [18, 11] },	// 8
+      { criminal: false, hint: `E${isRoco ? '' : 'l'}s 2 ${activeNotTrait}s sota de #NAME:2 estan connectats`, proof: [16] },	// 9
+      { criminal: false, hint: `Exactament 2 dels 6 ${activeNotTrait}s veïns de #NAME:14 estan sota de #NAME:3`, proof: [16] },	// 10
+      { criminal: false, hint: "Algú ha vist el meu nifo?", proof: [17] },	// 11
+      { criminal: false, hint: `Només una columna té exactament 2 ${activeTrait}s`, proof: [4] },	// 12
+      { criminal: false, hint: `Hi ha més ${v}s a la col C que a la col D`, proof: [10] },	// 13
+      { criminal: false, hint: "Same name na eh eh...", proof: [0] },	// 14
+      { criminal: true, hint: "Vaya toies!!", proof: [0] },	// 15
+      { criminal: true, hint: `No hi ha cap ${v} a l'esquerra de #NAME:11 que sigui veí de #NAME:6`, proof: [] },	// 16
+      { criminal: false, hint: `#NAME:11 és un dels 3 ${activeNotTrait}s sota de #NAME:3`, proof: [10] },	// 17
+      { criminal: true, hint: `La fila 4 és l'única fila amb exactament un ${activeTrait}`, proof: [9] },	// 18
+      { criminal: false, hint: "I tu? Amb qui vas al mundial?", proof: [0] }	// 19
     ];
 
     // VARIABLES GLOBALS DINÀMIQUES
@@ -1058,8 +1086,9 @@
     let state = {};
 
     const PUZZLE_LOGICS = {
-      1: PUZZLE_LOGIC_1(activeTrait, activeNotTrait),
-      2: PUZZLE_LOGIC_2(activeTrait, activeNotTrait)
+      1: PUZZLE_LOGIC_1,
+      2: PUZZLE_LOGIC_2,
+      3: PUZZLE_LOGIC_3
     };
 
     function buildPuzzle(id) {
@@ -1097,24 +1126,43 @@
 
     // FUNCIÓ PER CANVIAR DE PUZLE DES DELS BOTONS
     function switchPuzzle(id) {
-      if (currentPuzzleId === id) return; // Ja estem en aquest puzle
+      if (currentPuzzleId === id) return; 
       
       buildPuzzle(id);
-      Object.assign(state, loadState()); // Carreguem l'estat d'aquell puzle específic (desat a localStorage)
+      Object.assign(state, loadState()); 
       
-      // Buidem la interfície visual perquè es tornin a pintar les fotos i les cares noves
       boardEl.innerHTML = "";
       
-      // Actualitzem l'estil dels botons superiors
-      document.querySelectorAll('.puzzle-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.id === id);
-      });
+      // En lloc de buscar botons a l'HTML, tornem a pintar-los amb l'estat actualitzat
+      renderPuzzleButtons();
       
       render();
     }
 
+    // NOVA FUNCIÓ: CREA ELS BOTONS AUTOMÀTICAMENT LLEGINT ELS PUZLES EXISTENTS
+    function renderPuzzleButtons() {
+      if (!puzzleSelectorEl) return;
+      puzzleSelectorEl.innerHTML = ""; // Buidem el contenidor
+      
+      // Llegeix totes les claus de PUZZLE_LOGICS (1, 2, 3...)
+      Object.keys(PUZZLE_LOGICS).forEach(id => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        // Si el botó coincideix amb el puzle actual, li posem la classe 'active'
+        btn.className = `puzzle-btn ${id === currentPuzzleId ? 'active' : ''}`;
+        btn.dataset.id = id;
+        btn.textContent = `Cas ${id}`;
+        
+        // Li afegim l'esdeveniment del clic
+        btn.addEventListener("click", () => switchPuzzle(id));
+        
+        puzzleSelectorEl.appendChild(btn);
+      });
+    }
+
     // Inicialitzem el joc!
     buildPuzzle(currentPuzzleId);
+    renderPuzzleButtons();
     state = loadState();
 
     function freshState() {
