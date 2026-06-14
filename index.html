@@ -892,7 +892,10 @@
 
     // 1. LLEGIR LA URL I CONFIGURAR EL TEMA
     const urlParams = new URLSearchParams(window.location.search);
-    const currentGroup = urlParams.get('group') === 'roco' ? 'roco' : 'guarroak';
+    const currentGroup = urlParams.get('group') === 'roco'
+                          ? 'roco'
+                          : urlParams.get('group') === 'wiris'
+                            ? 'wiris' : 'guarroak';
 
     const THEMES = {
       guarroak: {
@@ -906,9 +909,9 @@
         notTrait: "no gat"
       },
       wiris: {
-        title: "Are U a ",
-        trait: "",
-        notTrait: "no "
+        title: "Are U a Mikado",
+        trait: "mikado",
+        notTrait: "no mikado"
       }
     };
     const activeTheme = THEMES[currentGroup];
@@ -1072,7 +1075,7 @@
       { criminal: false, hint: `Hi ha més ${activeTrait}s a la col C que a la col D`, proof: [10] },	// 13
       { criminal: false, hint: "Same name na eh eh...", proof: [0] },	// 14
       { criminal: true, hint: "Vaya toies!!", proof: [0] },	// 15
-      { criminal: true, hint: `No hi ha cap ${v} a l'esquerra de #NAME:11 que sigui veí de #NAME:6`, proof: [] },	// 16
+      { criminal: true, hint: `No hi ha cap ${activeTrait} a l'esquerra de #NAME:11 que sigui veí de #NAME:6`, proof: [] },	// 16
       { criminal: false, hint: `#NAME:11 és un dels 3 ${activeNotTrait}s sota de #NAME:3`, proof: [10] },	// 17
       { criminal: true, hint: `La fila 4 és l'única fila amb exactament un ${activeTrait}`, proof: [9] },	// 18
       { criminal: false, hint: "I tu? Amb qui vas al mundial?", proof: [0] }	// 19
