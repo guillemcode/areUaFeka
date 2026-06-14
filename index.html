@@ -986,8 +986,8 @@
       { name: "Marc", profession: "tu que fas?", photo: "images/roco/.jpg" }, // 13
       { name: "Aida", profession: "", photo: "images/roco/.jpg" }, // 14
       { name: "Ivan", profession: "organitzador", photo: "images/roco/.jpg" },   // 15
-      { name: "Carla", profession: "", photo: "images/roco/.jpg" },// 16
-      { name: "Caro", profession: "", photo: "images/roco/.jpg" },   // 17
+      { name: "Carla", profession: "o Clara?", photo: "images/roco/.jpg" },// 16
+      { name: "Dani", profession: "motero", photo: "images/roco/.jpg" },   // 17
       { name: "Andreu", profession: "prens", photo: "images/roco/.jpg" },  // 18
       { name: "Coderch", profession: "enigma?", photo: "images/roco/guillem.jpg" }  // 19
     ];
@@ -1006,7 +1006,7 @@
   
     // 3. DEFINIR LA LÒGICA DEPENENT DEL GRUP
     // 11/5
-    const PUZZLE_LOGIC_1 =() => [
+    const PUZZLE_LOGIC_1 = [
       { criminal: true, hint: `Hi ha mateix nº de ${activeTrait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
       { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
       { criminal: true, hint: `Hi ha un nº senar de ${activeTrait}s sobre de #NAME:16`, proof: [10] }, // 2
@@ -1030,7 +1030,7 @@
     ];
 
     // 11/5
-    const PUZZLE_LOGIC_2 = () => [
+    const PUZZLE_LOGIC_2 = [
       { criminal: false, hint: "Sembla que intenten aixecar el camió de gelats fent servir imants?", proof: [9] },          // 0
       { criminal: false, hint: `Exactament 1 ${activeTrait} a la col B és veí de #NAME:6`, proof: [15,19] }, 
       { criminal: false, hint: `Només 1 dels 3 ${activeTrait}s a la col C és veí de #NAME:6`, proof: [] }, 
@@ -1055,7 +1055,7 @@
 
     // 20/5
 
-    const PUZZLE_LOGIC_3 = () => [
+    const PUZZLE_LOGIC_3 = [
       { criminal: false, hint: `Cada columna té com a mínim un ${activeTrait}`, proof: [12] },	// 0
       { criminal: false, hint: "A mi m'agrada més el waka waka...", proof: [0] },	// 1
       { criminal: false, hint: `Sembla que el meu ${isRoco ? 'magnesi' : 'ordinador'} ha desaparegut...`, proof: [8] },	// 2
@@ -1088,7 +1088,7 @@
     const PUZZLE_LOGICS = {
       1: PUZZLE_LOGIC_1,
       2: PUZZLE_LOGIC_2,
-      3: PUZZLE_LOGIC_3
+      3: PUZZLE_LOGIC_3,
     };
 
     function buildPuzzle(id) {
