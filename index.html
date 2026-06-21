@@ -1094,7 +1094,7 @@
       { criminal: false, hint: `#NAME:11 és un dels 6 ${activeNotTrait}s veïns de #NAME:10`, proof: [3] },	// 4
       { criminal: true, hint: "Us munyirem fins a deixar-vos secs amb les nostres pujades de preu del gelat!", proof: [7] },	// 5
       { criminal: false, hint: `Exactament 2 ${activeNotTrait}s a l'esquerra de #NAME:11 són veïns de #NAME:4`, proof: [] },	// 6
-      { criminal: false, hint: `Hi ha el mateix nº de ${activeTrait}s a les col A i C`, proof: [1] },	// 7
+      { criminal: false, hint: `Hi ha el mateix nº de ${activeTrait}s a les col A i C`, proof: [15] },	// 7
       { criminal: false, hint: `Exactament 1 d'entre #NAME:16, #NAME:17 o #NAME:18 té un ${activeTrait} just a la seva dreta`, proof: [6] },	// 8
       { criminal: false, hint: `La fila 5 és l'única fila amb exactament 2 ${activeNotTrait}s`, proof: [6] },	// 9
       { criminal: true, hint: "Com que vam fallar robant el camió de gelats, hem anat a la font! Ha ha!", proof: [4] },	// 10
@@ -1102,7 +1102,7 @@
       { criminal: false, hint: "No ho havia vist a venir, t'ho reconec.", proof: [1] },	// 12
       { criminal: false, hint: "Això és una bestiesa... per no dir una mamellada!", proof: [1] },	// 13
       { criminal: false, hint: "Totes les meves vaques han desaparegut!", proof: [17] },	// 14
-      { criminal: true, hint: "Fins i tot podem vendre el gelat! Tenim la vaca dels ous d'or a les mans!", proof: [1] },	// 15
+      { criminal: true, hint: "Fins i tot podem vendre el gelat! Tenim la vaca dels ous d'or a les mans!", proof: [13] },	// 15
       { criminal: true, hint: `Només 1 dels 2 ${activeTrait}s a l'esquerra de #NAME:3 és veí de #NAME:6`, proof: [8, 9] },	// 16
       { criminal: false, hint: `Només 1 dels 4 ${activeTrait}s veïns de #NAME:6 és a la fila 3`, proof: [0] },	// 17
       { criminal: false, hint: `No crec que els ${activeTrait}s s'adonin de la feina que dona tenir vaques...`, proof: [7] },	// 18
@@ -1384,7 +1384,7 @@
       
       if (state.revealed.size === PUZZLE.cards.length && !state.completeTime) {
         state.completeTime = elapsedMs();
-        notice("Puzzle completat", `Has tancat el cas en ${formatTime(state.completeTime)} amb ${state.attempts} intents.`);
+        notice("Puzzle completat", `Has tancat el cas en ${formatTime(state.completeTime)} amb ${state.errors} errors.`);
       }
 
       saveState();
@@ -1511,7 +1511,7 @@
         activeTheme.title,
         resultLine,
         `Temps: ${formatTime(elapsedMs())}`,
-        `Intents: ${state.attempts}`,
+        `Errors: ${state.errors}`,
         rows.join("\n")
       ].join("\n");
     }
@@ -1673,7 +1673,7 @@
         completeBoxEl.innerHTML = "";
         return;
       }
-      completeBoxEl.innerHTML = `<strong>Cas tancat.</strong><span>${formatTime(elapsedMs())} · ${state.attempts} intents</span>`;
+      completeBoxEl.innerHTML = `<strong>Cas tancat.</strong><span>${formatTime(elapsedMs())} · ${state.errors} errors</span>`;
     }
 
     function renderHistory() {
