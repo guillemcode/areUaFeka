@@ -1157,6 +1157,30 @@
       { criminal: false, hint: "Ni idea. No se m'acut res.", proof: [18] }	// 19
     ];
 
+    // 2/8
+    const PUZZLE_LOGIC_7 = [
+      { criminal: false, hint: `En #NAME:13 té exactament 6 ${activeTrait}s veïns`, proof: [6] },	// 0
+      { criminal: false, hint: `Només 1 dels 2 ${activeTrait}s veïns de #NAME:3 és a la fila 1`, proof: [] },	// 1
+      { criminal: true, hint: `#NAME:4 és un dels 5 ${activeNotTrait}s veïns de #NAME:5`, proof: [1] },	// 2
+      { criminal: true, hint: `Només 1 ${activeTrait} a la col C té un ${activeNotTrait} just a la seva esquerra`, proof: [4] },	// 3
+      { criminal: false, hint: `Hi ha exactament 2 ${activeTrait}s sobre de #NAME:11`, proof: [2] },	// 4
+      { criminal: true, hint: "No m'importa anar a la presó, ja que així puc passar l'estona amb les meves germanes!", proof: [12,7] },	// 5
+      { criminal: false, hint: `Un nº senar de veïns de #NAME:13 a la fila 3 són ${activeNotTrait}s`, proof: [4] },	// 6
+      { criminal: true, hint: `Hi ha un nº senar de ${activeTrait}s a la col D`, proof: [4] },	// 7
+      { criminal: false, hint: "Puc tenir una mica d'aquest pastís si m'uneixo a vosaltres?", proof: [19] },	// 8
+      { criminal: true, hint: `Un nº senar de ${activeNotTrait}s a ${isRoco ? 's' : 'l'}es vores són veïns de #NAME:17`, proof: [0,3] },	// 9
+      { criminal: true, hint: "Totes podem ser germanes! Brindem pel dia nacional de les germanes!", proof: [19] },	// 10
+      { criminal: false, hint: `Sembla un bon grup... Puc ser la vostra germana encara que sigui ${activeNotTrait}?`, proof: [15] },	// 11
+      { criminal: false, hint: `Hi ha 8 ${activeNotTrait}s en total`, proof: [14] },	// 12
+      { criminal: true, hint: "Mai delataré les meves germanes de crim!", proof: [9] },	// 13
+      { criminal: true, hint: `Només una persona a la col B té exactament 4 ${activeNotTrait}s veïns`, proof: [9] },	// 14
+      { criminal: false, hint: `Hi ha més ${activeNotTrait}s a la fila 3 que a la fila 5`, proof: [12,18] },	// 15
+      { criminal: true, hint: `Hi ha més ${activeNotTrait}s a la fila 4 que a la fila 5`, proof: [14] },	// 16
+      { criminal: true, hint: "Avui és el dia nacional de les germanes! I sí, jo he robat el pastís.", proof: [0,3] },	// 17
+      { criminal: true, hint: "Per vosaltres, germanes meves!", proof: [14] },	// 18
+      { criminal: true, hint: `Hi ha exactament 4 ${activeNotTrait}s a la col A`, proof: [15] }	// 19
+    ];
+
     // VARIABLES GLOBALS DINÀMIQUES
     let currentPuzzleId = localStorage.getItem('aruafeka-puzzle') || '1';
     let PUZZLE = {};
@@ -1171,6 +1195,7 @@
       4: PUZZLE_LOGIC_4,
       5: PUZZLE_LOGIC_5,
       6: PUZZLE_LOGIC_6,
+      7: PUZZLE_LOGIC_7,
     };
 
     function buildPuzzle(id) {
