@@ -103,6 +103,34 @@
       color: #fff;
       border-color: var(--ink);
     }
+
+    .puzzle-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-style: dashed;
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .unlock-tooltip {
+      position: absolute;
+      background: var(--ink);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      pointer-events: none; /* Evita que bloquegi altres clics */
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 9999;
+      white-space: nowrap;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .unlock-tooltip.visible {
+      opacity: 1;
+    }
     
     @media (max-width: 680px) {
       .topbar {
@@ -298,8 +326,8 @@
     }
 
     .tag-dot {
-      width: 12px;
-      height: 12px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       border: 1px solid rgba(0, 0, 0, 0.14);
       background: transparent;
@@ -859,6 +887,7 @@
         <button id="notice-close" class="primary" type="button">D'acord</button>
       </div>
     </div>
+  <div id="unlock-tooltip" class="unlock-tooltip"></div>
   </dialog>
 
   <script>
@@ -884,6 +913,8 @@
     const choiceMeta = document.querySelector("#choice-meta");
     const choiceClue = document.querySelector("#choice-clue");
     const choiceActions = document.querySelector("#choice-actions");
+    const tooltipEl = document.querySelector("#unlock-tooltip");
+    let countdownInterval = null; // Guardarà el temporitzador
 
     const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
     const TAGS = ["", "amber", "blue", "pink", "green"];
@@ -941,10 +972,10 @@
       { name: "Enaitz", profession: "stylish boy", photo: "images/guarroak/enaitz.jpg" },// 11
       { name: "Jon", profession: "hielo?", photo: "images/guarroak/jon.jpg" },  // 12
       { name: "Albert", profession: "Chetaaaldo", photo: "images/guarroak/albert.jpg" }, // 13
-      { name: "Moni", profession: "m - woman", photo: "images/guarroak/moni.jpg" }, // 14
+      { name: "Moni", profession: "presi cum-unitat", photo: "images/guarroak/moni.jpg" }, // 14
       { name: "Roger", profession: "gumeg", photo: "images/guarroak/roger.jpg" },   // 15
-      { name: "Zoe", profession: "minnie", photo: "images/guarroak/zoe.jpg" },// 16
-      { name: "Alex", profession: "Martous", photo: "images/guarroak/martos.jpg" },   // 17
+      { name: "Zoe", profession: "allez!", photo: "images/guarroak/zoe.jpg" },// 16
+      { name: "Martos", profession: "cebo", photo: "images/guarroak/martos.jpg" },   // 17
       { name: "Mariona", profession: "c. teacher", photo: "images/guarroak/mariona.jpg" },  // 18
       { name: "Guillem", profession: "iscalatore", photo: "images/guarroak/guillem.jpg" }  // 19
     ];
@@ -1015,7 +1046,7 @@
     // 11/5
     const PUZZLE_LOGIC_1 = [
       { criminal: true, hint: `Hi ha mateix nº de ${activeTrait}s a ${isRoco ? 's' : 'l'}es col A i B`, proof: [2] }, // 0
-      { criminal: true, hint: !isRoco ? "IOIOIOOOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
+      { criminal: true, hint: !isRoco ? "IOOOOLDIIII" : "Monanam?", proof: [9] }, // 1
       { criminal: true, hint: `Hi ha un nº senar de ${activeTrait}s sobre de #NAME:16`, proof: [10] }, // 2
       { criminal: false, hint: `Hi ha exactament 2 ${activeNotTrait}s a la dreta de #NAME:4`, proof: [7] }, // 3
       { criminal: false, hint: "#NAME:1, hanabi?", proof: [18] }, // 4
@@ -1182,7 +1213,7 @@
     ];
 
     // VARIABLES GLOBALS DINÀMIQUES
-    let currentPuzzleId = localStorage.getItem('aruafeka-puzzle') || '1';
+    let currentPuzzleId = String(Math.min(parseInt(localStorage.getItem('aruafeka-puzzle')), getUnlockedPuzzlesCount())) || '1';
     let PUZZLE = {};
     let STORAGE_KEY = '';
     let initialReveal = [];
@@ -1197,6 +1228,20 @@
       6: PUZZLE_LOGIC_6,
       7: PUZZLE_LOGIC_7,
     };
+
+    const START_DATE = new Date(isGuarroak ? "2026-08-07T00:00:00" : "2026-01-07T00:00:00").getTime(); 
+
+    function getUnlockedPuzzlesCount() {
+      const now = Date.now();
+      if (now < START_DATE) return 0; // Si encara no ha començat el joc!
+      
+      // Calculem la diferència en dies
+      const diffTime = now - START_DATE;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Retornem els dies passats + 1 (El dia 0 desbloqueja el puzle 1)
+      return diffDays + 1; 
+    }
 
     function buildPuzzle(id) {
       currentPuzzleId = id;
@@ -1249,19 +1294,69 @@
     // NOVA FUNCIÓ: CREA ELS BOTONS AUTOMÀTICAMENT LLEGINT ELS PUZLES EXISTENTS
     function renderPuzzleButtons() {
       if (!puzzleSelectorEl) return;
-      puzzleSelectorEl.innerHTML = ""; // Buidem el contenidor
+      puzzleSelectorEl.innerHTML = ""; 
       
-      // Llegeix totes les claus de PUZZLE_LOGICS (1, 2, 3...)
-      Object.keys(PUZZLE_LOGICS).forEach(id => {
+      const unlockedCount = getUnlockedPuzzlesCount();
+      const puzzleKeys = Object.keys(PUZZLE_LOGICS);
+
+      puzzleKeys.forEach((id, index) => {
         const btn = document.createElement("button");
         btn.type = "button";
-        // Si el botó coincideix amb el puzle actual, li posem la classe 'active'
-        btn.className = `puzzle-btn ${id === currentPuzzleId ? 'active' : ''}`;
         btn.dataset.id = id;
-        btn.textContent = `Cas ${id}`;
         
-        // Li afegim l'esdeveniment del clic
-        btn.addEventListener("click", () => switchPuzzle(id));
+        // Comprovem si aquest puzle ja toca (l'índex 0 és el puzle 1)
+        const isUnlocked = index < unlockedCount;
+
+        if (isUnlocked) {
+          btn.className = `puzzle-btn ${id === currentPuzzleId ? 'active' : ''}`;
+          btn.textContent = `Cas ${id}`;
+          btn.addEventListener("click", () => switchPuzzle(id));
+        } else {
+          btn.className = "puzzle-btn";
+          btn.textContent = `Cas ${id} 🔒`;
+          btn.disabled = true; // Això evita que s'hi pugui fer clic
+        // --- NOVA LÒGICA DE HOVER (COMPTE ENRERE) ---
+          btn.addEventListener("mouseenter", (e) => {
+            // Calculem la data d'obertura exacta d'aquest puzle
+            const unlockTime = START_DATE + (index * 24 * 60 * 60 * 1000);
+            
+            const updateTooltip = () => {
+              const diff = unlockTime - Date.now();
+              if (diff <= 0) {
+                tooltipEl.textContent = "Ja disponible! (Refresca la pàgina)";
+                return;
+              }
+              
+              // Matemàtiques per treure dies, hores, minuts i segons
+              const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+              const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+              const m = Math.floor((diff / (1000 * 60)) % 60);
+              const s = Math.floor((diff / 1000) % 60);
+              
+              let timeStr = "";
+              if (d > 0) timeStr += `${d}d `;
+              timeStr += `${h}h ${m}m ${s}s`;
+              
+              tooltipEl.textContent = `S'obre en: ${timeStr}`;
+            };
+            
+            // L'executem immediatament un cop i després cada segon
+            updateTooltip();
+            countdownInterval = setInterval(updateTooltip, 1000);
+            
+            // Posicionem el tooltip just a sota del botó
+            const rect = btn.getBoundingClientRect();
+            tooltipEl.style.top = `${rect.bottom + window.scrollY + 8}px`;
+            tooltipEl.style.left = `${rect.left + window.scrollX}px`;
+            tooltipEl.classList.add("visible");
+          });
+
+          // Quan el ratolí marxa, amaguem el tooltip i aturem el rellotge
+          btn.addEventListener("mouseleave", () => {
+            clearInterval(countdownInterval);
+            tooltipEl.classList.remove("visible");
+          });
+        }
         
         puzzleSelectorEl.appendChild(btn);
       });
