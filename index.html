@@ -1212,6 +1212,8 @@
       { criminal: true, hint: `Hi ha exactament 4 ${activeNotTrait}s a la col A`, proof: [15] }	// 19
     ];
 
+    const START_DATE = new Date(isGuarroak ? "2026-08-07T00:00:00" : "2026-01-07T00:00:00").getTime(); 
+
     // VARIABLES GLOBALS DINÀMIQUES
     let currentPuzzleId = String(Math.min(parseInt(localStorage.getItem('aruafeka-puzzle')), getUnlockedPuzzlesCount())) || '1';
     let PUZZLE = {};
@@ -1228,8 +1230,6 @@
       6: PUZZLE_LOGIC_6,
       7: PUZZLE_LOGIC_7,
     };
-
-    const START_DATE = new Date(isGuarroak ? "2026-08-07T00:00:00" : "2026-01-07T00:00:00").getTime(); 
 
     function getUnlockedPuzzlesCount() {
       const now = Date.now();
