@@ -104,7 +104,7 @@
       border-color: var(--ink);
     }
 
-    .puzzle-btn:disabled {
+    .puzzle-btn.locked {
       opacity: 0.5;
       cursor: not-allowed;
       border-style: dashed;
@@ -113,23 +113,27 @@
     }
 
     .unlock-tooltip {
-      position: absolute;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
       background: var(--ink);
       color: #fff;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      pointer-events: none; /* Evita que bloquegi altres clics */
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      pointer-events: none;
       opacity: 0;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
       z-index: 9999;
       white-space: nowrap;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .unlock-tooltip.visible {
       opacity: 1;
+      transform: translateX(-50%) translateY(-10px); /* Petit efecte de pujada en aparèixer */
     }
     
     @media (max-width: 680px) {
@@ -791,7 +795,7 @@
         border-width: 1.5px;
       }
       
-      .tag-dot { width: 10px; height: 10px; }
+      .tag-dot { width: 18px; height: 18px; }
 
       .card-name { 
         font-size: 0.6rem; 
@@ -914,7 +918,7 @@
     const choiceClue = document.querySelector("#choice-clue");
     const choiceActions = document.querySelector("#choice-actions");
     const tooltipEl = document.querySelector("#unlock-tooltip");
-    let countdownInterval = null; // Guardarà el temporitzador
+    let toastTimeout = null; // Aquesta variable controlarà els 3 segons
 
     const COLUMNS = ["A", "B", "C", "D", "E", "F", "G"];
     const TAGS = ["", "amber", "blue", "pink", "green"];
@@ -1304,7 +1308,6 @@
         btn.type = "button";
         btn.dataset.id = id;
         
-        // Comprovem si aquest puzle ja toca (l'índex 0 és el puzle 1)
         const isUnlocked = index < unlockedCount;
 
         if (isUnlocked) {
@@ -1312,49 +1315,34 @@
           btn.textContent = `Cas ${id}`;
           btn.addEventListener("click", () => switchPuzzle(id));
         } else {
-          btn.className = "puzzle-btn";
+          // IMPORTANT: Ara fem servir la classe 'locked' i NO disabled=true
+          btn.className = "puzzle-btn locked"; 
           btn.textContent = `Cas ${id} 🔒`;
-          btn.disabled = true; // Això evita que s'hi pugui fer clic
-        // --- NOVA LÒGICA DE HOVER (COMPTE ENRERE) ---
-          btn.addEventListener("mouseenter", (e) => {
-            // Calculem la data d'obertura exacta d'aquest puzle
+          
+          btn.addEventListener("click", () => {
             const unlockTime = START_DATE + (index * 24 * 60 * 60 * 1000);
+            const diff = unlockTime - Date.now();
             
-            const updateTooltip = () => {
-              const diff = unlockTime - Date.now();
-              if (diff <= 0) {
-                tooltipEl.textContent = "Ja disponible! (Refresca la pàgina)";
-                return;
-              }
-              
-              // Matemàtiques per treure dies, hores, minuts i segons
+            if (diff <= 0) {
+              tooltipEl.textContent = "Ja disponible! (Refresca la pàgina)";
+            } else {
+              // Calculem dies i hores simples per fer-ho fàcil de llegir
               const d = Math.floor(diff / (1000 * 60 * 60 * 24));
               const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
               const m = Math.floor((diff / (1000 * 60)) % 60);
-              const s = Math.floor((diff / 1000) % 60);
               
-              let timeStr = "";
-              if (d > 0) timeStr += `${d}d `;
-              timeStr += `${h}h ${m}m ${s}s`;
-              
-              tooltipEl.textContent = `S'obre en: ${timeStr}`;
-            };
+              let tempsText = d > 0 ? `${d} dies i ${h} hores` : `${h} hores i ${m} minuts`;
+              tooltipEl.textContent = `🔒 Cas disponible en: ${tempsText}`;
+            }
             
-            // L'executem immediatament un cop i després cada segon
-            updateTooltip();
-            countdownInterval = setInterval(updateTooltip, 1000);
-            
-            // Posicionem el tooltip just a sota del botó
-            const rect = btn.getBoundingClientRect();
-            tooltipEl.style.top = `${rect.bottom + window.scrollY + 8}px`;
-            tooltipEl.style.left = `${rect.left + window.scrollX}px`;
+            // Mostrem el missatge
             tooltipEl.classList.add("visible");
-          });
-
-          // Quan el ratolí marxa, amaguem el tooltip i aturem el rellotge
-          btn.addEventListener("mouseleave", () => {
-            clearInterval(countdownInterval);
-            tooltipEl.classList.remove("visible");
+            
+            // Si ja hi havia un missatge, reiniciem el temps perquè es quedi 3 segons més
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+              tooltipEl.classList.remove("visible");
+            }, 3000);
           });
         }
         
