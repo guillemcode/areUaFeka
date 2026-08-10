@@ -85,9 +85,24 @@
     .puzzle-selector {
       display: flex;
       gap: 8px;
+      
+      /* LÒGICA D'SCROLL */
+      overflow-x: auto;       /* Activa el desplaçament horitzontal */
+      flex-wrap: nowrap;      /* Evita que els botons saltin a la línia de sota */
+      padding-bottom: 4px;    /* Una mica d'aire a sota per si fas clic amb el dit gruixut */
+      
+      /* AMAGA LA BARRA D'SCROLL LLETJA */
+      scrollbar-width: none;  /* Per a Firefox */
+      -ms-overflow-style: none; /* Per a IE i Edge */
+    }
+
+    /* Amaga la barra d'scroll a Chrome, Safari i navegadors de mòbil */
+    .puzzle-selector::-webkit-scrollbar {
+      display: none; 
     }
 
     .puzzle-btn {
+      flex-shrink: 0;
       padding: 6px 12px;
       font-size: 0.85rem;
       font-weight: 700;
