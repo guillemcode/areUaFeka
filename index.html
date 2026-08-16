@@ -1234,12 +1234,14 @@
     ];
 
     const START_DATE = new Date(
-      isGuarroak ? "2026-08-17T00:00:00" :
-      isRoco ? "2026-08-24T00:00:00" :
-      isWiris ? "2026-08-24T00:00:00" : "2026-01-07T00:00:00").getTime(); 
+      isGuarroak ? "2026/08/17 00:00:00" :
+      isRoco ? "2026/08/24 00:00:00" :
+      isWiris ? "2026/08/24 00:00:00" : "2026/01/07 00:00:00").getTime();
+
+    const initialPuzzle = localStorage.getItem('aruafeka-puzzle') || '1';
 
     // VARIABLES GLOBALS DINÀMIQUES
-    let currentPuzzleId = String(Math.min(parseInt(localStorage.getItem('aruafeka-puzzle')), getUnlockedPuzzlesCount())) || '1';
+    let currentPuzzleId = String(Math.min(parseInt(initialPuzzle), getUnlockedPuzzlesCount())) || '1';
     let PUZZLE = {};
     let STORAGE_KEY = '';
     let initialReveal = [];
