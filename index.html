@@ -1871,9 +1871,6 @@
     restartBtn.addEventListener("click", restart);
     shareBtn.addEventListener("click", copyShare);
     noticeClose.addEventListener("click", () => dialog.close());
-    document.querySelectorAll('.puzzle-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => switchPuzzle(e.target.dataset.id));
-    });
     setInterval(() => {
       renderStats();
       if (!state.completeTime) saveState();
