@@ -83,6 +83,7 @@
     }
 
     .puzzle-selector {
+      padding-top: 4px;
       display: flex;
       gap: 8px;
       
@@ -1029,7 +1030,7 @@
       { name: "Vilaseca", profession: "Moianí",     photo: "images/wiris/vilaseca.jpg" }, // 2
       { name: "Ripoll", profession: "1 o 2?",       photo: "images/wiris/ripoll.jpg" }, // 3
       { name: "Aina", profession: "palacetes",      photo: "images/wiris/aina.jpg" }, // 4
-      { name: "Ros", profession: "2 o 1?",          photo: "images/wiris/.jpg" }, // 5
+      { name: "Ros", profession: "2 o 1?",          photo: "images/wiris/ros.jpg" }, // 5
       { name: "Noelia", profession: "vermutet?",    photo: "images/wiris/noelia.jpg" }, // 6
       { name: "Ubaldo", profession: "el camisas",   photo: "images/wiris/ubaldo.jpg" }, // 7
       { name: "David", profession: "festis",        photo: "images/wiris/david.jpg" }, // 8
@@ -1232,7 +1233,10 @@
       { criminal: true, hint: `Hi ha exactament 4 ${activeNotTrait}s a la col A`, proof: [15] }	// 19
     ];
 
-    const START_DATE = new Date(isGuarroak ? "2026-08-07T00:00:00" : "2026-01-07T00:00:00").getTime(); 
+    const START_DATE = new Date(
+      isGuarroak ? "2026-08-17T00:00:00" :
+      isRoco ? "2026-08-24T00:00:00" :
+      isWiris ? "2026-08-24T00:00:00" : "2026-01-07T00:00:00").getTime(); 
 
     // VARIABLES GLOBALS DINÀMIQUES
     let currentPuzzleId = String(Math.min(parseInt(localStorage.getItem('aruafeka-puzzle')), getUnlockedPuzzlesCount())) || '1';
