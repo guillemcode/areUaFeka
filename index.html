@@ -1236,12 +1236,24 @@
     const START_DATE = new Date(
       isGuarroak ? "2026/08/17 00:00:00" :
       isRoco ? "2026/08/24 00:00:00" :
-      isWiris ? "2026/08/24 00:00:00" : "2026/01/07 00:00:00").getTime();
+      isWiris ? "2026/08/24 00:00:00" : "2026/01/07 00:00:00"
+    ).getTime();
 
-    const initialPuzzle = localStorage.getItem('aruafeka-puzzle') || '1';
+    // 1. LECTURA SUPER SEGURA DE LA MEMÒRIA
+    let rawInitial = localStorage.getItem('aruafeka-puzzle');
+    let parsedPuzzle = parseInt(rawInitial);
 
-    // VARIABLES GLOBALS DINÀMIQUES
-    let currentPuzzleId = String(Math.min(parseInt(initialPuzzle), getUnlockedPuzzlesCount())) || '1';
+    // Si el mòbil tenia un "0" o "NaN" guardat per culpa de l'error anterior, el curem forçant-lo a 1
+    if (isNaN(parsedPuzzle) || parsedPuzzle < 1) {
+      parsedPuzzle = 1;
+    }
+
+    const maxUnlocked = Math.max(1, getUnlockedPuzzlesCount());
+
+    // 2. VARIABLES GLOBALS DINÀMIQUES
+    // Ara garantim que MAI serà menor que 1 ni major que els disponibles
+    let currentPuzzleId = String(Math.min(parsedPuzzle, maxUnlocked));
+    
     let PUZZLE = {};
     let STORAGE_KEY = '';
     let initialReveal = [];
